@@ -1,0 +1,27 @@
+PODS:
+  - TensorFlowLiteC (0.0.1-nightly.20230411):
+    - TensorFlowLiteC/Core (= 0.0.1-nightly.20230411)
+  - TensorFlowLiteC/Core (0.0.1-nightly.20230411)
+  - TensorFlowLiteC/Metal (0.0.1-nightly.20230411):
+    - TensorFlowLiteC/Core
+  - TensorFlowLiteSwift/Core (0.0.1-nightly.20230411):
+    - TensorFlowLiteC (= 0.0.1-nightly.20230411)
+  - TensorFlowLiteSwift/Metal (0.0.1-nightly.20230411):
+    - TensorFlowLiteC/Metal (= 0.0.1-nightly.20230411)
+    - TensorFlowLiteSwift/Core (= 0.0.1-nightly.20230411)
+
+DEPENDENCIES:
+  - TensorFlowLiteSwift/Metal (~> 0.0.1-nightly)
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - TensorFlowLiteC
+    - TensorFlowLiteSwift
+
+SPEC CHECKSUMS:
+  TensorFlowLiteC: b1fd088801409002dfb0144294d55dfddcd9fc35
+  TensorFlowLiteSwift: ac6927d8c774910f21656058a2814772876c7d71
+
+PODFILE CHECKSUM: b34866f65c6a7948508f54785fdbcda0025e59ea
+
+COCOAPODS: 1.12.0

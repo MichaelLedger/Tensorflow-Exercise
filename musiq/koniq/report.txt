@@ -1,0 +1,27 @@
+TensorFlow 2.0 Upgrade Script
+-----------------------------
+Converted 1 files
+Detected 4 issues that require attention
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+File: /Users/gavinxiang/Desktop/musiq/koniq/convert_pb_to_tflite.py
+--------------------------------------------------------------------------------
+/Users/gavinxiang/Desktop/musiq/koniq/convert_pb_to_tflite.py:25:12: ERROR: Using member tf.contrib.lite.TFLiteConverter.from_saved_model in deprecated module tf.contrib. tf.contrib.lite.TFLiteConverter.from_saved_model cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+/Users/gavinxiang/Desktop/musiq/koniq/convert_pb_to_tflite.py:27:27: ERROR: Using member tf.contrib.lite.Optimize.DEFAULT in deprecated module tf.contrib. tf.contrib.lite.Optimize.DEFAULT cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+/Users/gavinxiang/Desktop/musiq/koniq/convert_pb_to_tflite.py:30:4: ERROR: Using member tf.contrib.lite.OpsSet.TFLITE_BUILTINS in deprecated module tf.contrib. tf.contrib.lite.OpsSet.TFLITE_BUILTINS cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+/Users/gavinxiang/Desktop/musiq/koniq/convert_pb_to_tflite.py:30:44: ERROR: Using member tf.contrib.lite.OpsSet.SELECT_TF_OPS in deprecated module tf.contrib. tf.contrib.lite.OpsSet.SELECT_TF_OPS cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+================================================================================
+Detailed log follows:
+
+================================================================================
+--------------------------------------------------------------------------------
+Processing file '/Users/gavinxiang/Desktop/musiq/koniq/convert_pb_to_tflite.py'
+ outputting to '/Users/gavinxiang/Desktop/musiq/koniq/convert_pb_to_tflite_v2.py'
+--------------------------------------------------------------------------------
+
+25:12: ERROR: Using member tf.contrib.lite.TFLiteConverter.from_saved_model in deprecated module tf.contrib. tf.contrib.lite.TFLiteConverter.from_saved_model cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+27:27: ERROR: Using member tf.contrib.lite.Optimize.DEFAULT in deprecated module tf.contrib. tf.contrib.lite.Optimize.DEFAULT cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+30:4: ERROR: Using member tf.contrib.lite.OpsSet.TFLITE_BUILTINS in deprecated module tf.contrib. tf.contrib.lite.OpsSet.TFLITE_BUILTINS cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+30:44: ERROR: Using member tf.contrib.lite.OpsSet.SELECT_TF_OPS in deprecated module tf.contrib. tf.contrib.lite.OpsSet.SELECT_TF_OPS cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+--------------------------------------------------------------------------------
+
