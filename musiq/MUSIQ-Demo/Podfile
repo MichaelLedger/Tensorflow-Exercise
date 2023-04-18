@@ -9,4 +9,6 @@ target 'MUSIQ-Demo' do
 
   # Pods for MUSIQ-Demo
   pod 'TensorFlowLiteSwift', '~> 0.0.1-nightly', :subspecs => ['Metal']
+  pod 'TensorFlowLiteSelectTfOps', '~> 0.0.1-nightly'
+  pod 'TensorFlowLiteTaskVision', '~> 0.4.3'
 end

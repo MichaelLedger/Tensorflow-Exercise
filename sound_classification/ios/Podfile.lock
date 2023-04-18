@@ -1,0 +1,28 @@
+PODS:
+  - TensorFlowLiteC (0.0.1-nightly.20230417):
+    - TensorFlowLiteC/Core (= 0.0.1-nightly.20230417)
+  - TensorFlowLiteC/Core (0.0.1-nightly.20230417)
+  - TensorFlowLiteSelectTfOps (0.0.1-nightly.20230417)
+  - TensorFlowLiteSwift (0.0.1-nightly.20230417):
+    - TensorFlowLiteSwift/Core (= 0.0.1-nightly.20230417)
+  - TensorFlowLiteSwift/Core (0.0.1-nightly.20230417):
+    - TensorFlowLiteC (= 0.0.1-nightly.20230417)
+
+DEPENDENCIES:
+  - TensorFlowLiteSelectTfOps (~> 0.0.1-nightly)
+  - TensorFlowLiteSwift (~> 0.0.1-nightly)
+
+SPEC REPOS:
+  trunk:
+    - TensorFlowLiteC
+    - TensorFlowLiteSelectTfOps
+    - TensorFlowLiteSwift
+
+SPEC CHECKSUMS:
+  TensorFlowLiteC: 0ff0b902ca53bb276f3cc701a91dda205891c23e
+  TensorFlowLiteSelectTfOps: 588983e40b33c447bab05cab4467941e9d043ca0
+  TensorFlowLiteSwift: e954facccf44c190c7c930c6f36b67c483412ae4
+
+PODFILE CHECKSUM: 1813c418d4a3d410f1ca2649753eb77ae1ebde47
+
+COCOAPODS: 1.12.0

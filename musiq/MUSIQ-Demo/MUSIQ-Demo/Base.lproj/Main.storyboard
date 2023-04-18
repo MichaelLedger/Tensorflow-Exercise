@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -11,7 +12,7 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="TFL_Style_Transfer" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="MUSIQ_Demo" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="UhJ-jg-kFY"/>
                         <viewControllerLayoutGuide type="bottom" id="TqK-8z-fNG"/>
@@ -21,14 +22,14 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="8lT-sf-xuk">
-                                <rect key="frame" x="0.0" y="94" width="414" height="414"/>
+                                <rect key="frame" x="0.0" y="98" width="414" height="414"/>
                                 <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="8lT-sf-xuk" secondAttribute="height" multiplier="1:1" id="8XK-Qi-m6A"/>
                                 </constraints>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yg9-nM-9J0">
-                                <rect key="frame" x="0.0" y="44" width="414" height="50"/>
+                                <rect key="frame" x="0.0" y="48" width="414" height="50"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2ym-n6-JSB">
                                         <rect key="frame" x="298" y="7" width="36" height="36"/>
@@ -44,18 +45,26 @@
                                             <action selector="onTapOpenCamera:" destination="BYZ-38-t0r" eventType="touchUpInside" id="BlS-nz-h4q"/>
                                         </connections>
                                     </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="MOS:0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sr0-1r-NyT">
+                                        <rect key="frame" x="181" y="14.5" width="52.5" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
                                     <constraint firstItem="qim-4p-Nop" firstAttribute="leading" secondItem="Yg9-nM-9J0" secondAttribute="leading" constant="80" id="6RE-N1-q5w"/>
                                     <constraint firstAttribute="trailing" secondItem="2ym-n6-JSB" secondAttribute="trailing" constant="80" id="8c9-0O-Xow"/>
                                     <constraint firstItem="2ym-n6-JSB" firstAttribute="centerY" secondItem="Yg9-nM-9J0" secondAttribute="centerY" id="OI2-kw-GhF"/>
                                     <constraint firstAttribute="height" constant="50" id="VjL-51-Jtg"/>
+                                    <constraint firstItem="Sr0-1r-NyT" firstAttribute="centerY" secondItem="Yg9-nM-9J0" secondAttribute="centerY" id="gKv-Ib-bY1"/>
+                                    <constraint firstItem="Sr0-1r-NyT" firstAttribute="centerX" secondItem="Yg9-nM-9J0" secondAttribute="centerX" id="hho-z3-drj"/>
                                     <constraint firstItem="2ym-n6-JSB" firstAttribute="centerY" secondItem="qim-4p-Nop" secondAttribute="centerY" id="yDZ-ho-qna"/>
                                 </constraints>
                             </view>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dy2-B8-THR">
-                                <rect key="frame" x="0.0" y="508" width="414" height="354"/>
+                                <rect key="frame" x="0.0" y="512" width="414" height="350"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5dC-eb-FHY">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="332"/>
@@ -78,7 +87,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Crop To Square" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tis-0d-4Zb">
-                                                <rect key="frame" x="8" y="52" width="119" height="21"/>
+                                                <rect key="frame" x="8" y="52" width="118" height="21"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -108,21 +117,21 @@
                                                     <constraint firstAttribute="width" constant="44" id="v58-7t-CZe"/>
                                                 </constraints>
                                             </imageView>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x4E-J7-5hQ">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x4E-J7-5hQ">
                                                 <rect key="frame" x="126" y="186" width="53" height="30"/>
                                                 <state key="normal" title="Change"/>
                                                 <connections>
                                                     <action selector="onTapChangeStyleButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Omq-ef-Bsc"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="V5H-FC-fxv">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="V5H-FC-fxv">
                                                 <rect key="frame" x="144" y="240" width="126" height="30"/>
                                                 <state key="normal" title="Run Style Transfer"/>
                                                 <connections>
                                                     <action selector="onTapRunButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="I8q-Y8-Lao"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UCi-ia-Mdy">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UCi-ia-Mdy">
                                                 <rect key="frame" x="165" y="278" width="84" height="30"/>
                                                 <state key="normal" title="Paste Image"/>
                                                 <connections>
@@ -133,13 +142,13 @@
                                                 <rect key="frame" x="357" y="86" width="51" height="31"/>
                                             </switch>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Run inference on GPU" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hzO-Vo-upI">
-                                                <rect key="frame" x="8" y="91" width="169" height="21"/>
+                                                <rect key="frame" x="8" y="91" width="167.5" height="21"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
-                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
                                             <constraint firstItem="NBJ-fY-j3b" firstAttribute="centerY" secondItem="iKP-H6-uOF" secondAttribute="centerY" id="17j-3o-U0u"/>
                                             <constraint firstItem="j88-xS-beZ" firstAttribute="top" secondItem="5dC-eb-FHY" secondAttribute="top" constant="8" id="3rz-j2-W5a"/>
@@ -183,7 +192,7 @@
                                 </constraints>
                             </scrollView>
                         </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="Yg9-nM-9J0" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="4am-fJ-WFG"/>
                             <constraint firstItem="Dy2-B8-THR" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="5Uw-2Z-NVX"/>
@@ -207,6 +216,7 @@
                         <outlet property="pasteImageButton" destination="UCi-ia-Mdy" id="gFO-iq-xgF"/>
                         <outlet property="photoCameraButton" destination="qim-4p-Nop" id="y1o-Th-yVd"/>
                         <outlet property="runButton" destination="V5H-FC-fxv" id="dAe-gi-tet"/>
+                        <outlet property="scoreLabel" destination="Sr0-1r-NyT" id="CpF-7j-kKe"/>
                         <outlet property="segmentedControl" destination="j88-xS-beZ" id="lHG-1F-UD5"/>
                         <outlet property="styleImageView" destination="NBJ-fY-j3b" id="JYl-Nb-jwJ"/>
                         <outlet property="useGPUSwitch" destination="wHu-xO-GTh" id="7gX-gs-CNo"/>
@@ -219,11 +229,11 @@
         <!--Style Picker View Controller-->
         <scene sceneID="zyI-Pe-UcK">
             <objects>
-                <collectionViewController storyboardIdentifier="StylePickerViewController" id="LmU-vq-Tbb" customClass="StylePickerViewController" customModule="TFL_Style_Transfer" customModuleProvider="target" sceneMemberID="viewController">
+                <collectionViewController storyboardIdentifier="StylePickerViewController" id="LmU-vq-Tbb" customClass="StylePickerViewController" customModule="MUSIQ_Demo" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="Kw5-Pd-Ndb">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" sectionInsetReference="layoutMargins" id="x68-Py-Dgp">
                             <size key="itemSize" width="250" height="250"/>
                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -231,7 +241,7 @@
                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         </collectionViewFlowLayout>
                         <cells>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="StylePickerCell" id="FcA-rT-BxQ" customClass="StylePickerCollectionViewCell" customModule="TFL_Style_Transfer" customModuleProvider="target">
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="StylePickerCell" id="FcA-rT-BxQ" customClass="StylePickerCollectionViewCell" customModule="MUSIQ_Demo" customModuleProvider="target">
                                 <rect key="frame" x="82" y="8" width="250" height="250"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="sAa-ta-7Pc">
@@ -274,5 +284,8 @@
     <resources>
         <image name="photo_camera" width="36" height="36"/>
         <image name="photo_library" width="36" height="36"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

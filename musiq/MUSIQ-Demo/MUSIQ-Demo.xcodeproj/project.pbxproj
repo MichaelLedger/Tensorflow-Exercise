@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6749091729EE290800FC7DE5 /* StyleTransferer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6749091629EE290800FC7DE5 /* StyleTransferer.swift */; };
+		6749091929EE62C000FC7DE5 /* MUSIQTaskVision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6749091829EE62C000FC7DE5 /* MUSIQTaskVision.swift */; };
 		676B8FEF29E95F5A006D24A4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676B8FEE29E95F5A006D24A4 /* AppDelegate.swift */; };
 		676B8FF129E95F5A006D24A4 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676B8FF029E95F5A006D24A4 /* SceneDelegate.swift */; };
 		676B8FF329E95F5A006D24A4 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676B8FF229E95F5A006D24A4 /* ViewController.swift */; };
@@ -30,6 +31,7 @@
 		508BB321A5A518E856EAB3E3 /* Pods-MUSIQ-Demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MUSIQ-Demo.release.xcconfig"; path = "Target Support Files/Pods-MUSIQ-Demo/Pods-MUSIQ-Demo.release.xcconfig"; sourceTree = "<group>"; };
 		5EE9EB304E023EEE0F28D9DD /* Pods-MUSIQ-Demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MUSIQ-Demo.debug.xcconfig"; path = "Target Support Files/Pods-MUSIQ-Demo/Pods-MUSIQ-Demo.debug.xcconfig"; sourceTree = "<group>"; };
 		6749091629EE290800FC7DE5 /* StyleTransferer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleTransferer.swift; sourceTree = "<group>"; };
+		6749091829EE62C000FC7DE5 /* MUSIQTaskVision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MUSIQTaskVision.swift; sourceTree = "<group>"; };
 		676B8FEB29E95F5A006D24A4 /* MUSIQ-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MUSIQ-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		676B8FEE29E95F5A006D24A4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		676B8FF029E95F5A006D24A4 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -106,12 +108,13 @@
 		676B900229E95F92006D24A4 /* TFLite */ = {
 			isa = PBXGroup;
 			children = (
-				676B900B29E96638006D24A4 /* model */,
 				676B900929E96615006D24A4 /* StylePickerViewController.swift */,
 				676B900529E9658E006D24A4 /* TFLiteExtension.swift */,
 				676B900629E9658E006D24A4 /* UIKitExtension.swift */,
 				6749091629EE290800FC7DE5 /* StyleTransferer.swift */,
 				676B900329E95FA9006D24A4 /* MUSIQTransferer.swift */,
+				6749091829EE62C000FC7DE5 /* MUSIQTaskVision.swift */,
+				676B900B29E96638006D24A4 /* model */,
 			);
 			path = TFLite;
 			sourceTree = "<group>";
@@ -170,6 +173,7 @@
 				TargetAttributes = {
 					676B8FEA29E95F5A006D24A4 = {
 						CreatedOnToolsVersion = 14.3;
+						LastSwiftMigration = 1430;
 					};
 				};
 			};
@@ -247,6 +251,7 @@
 				6749091729EE290800FC7DE5 /* StyleTransferer.swift in Sources */,
 				676B8FF129E95F5A006D24A4 /* SceneDelegate.swift in Sources */,
 				676B900429E95FA9006D24A4 /* MUSIQTransferer.swift in Sources */,
+				6749091929EE62C000FC7DE5 /* MUSIQTaskVision.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -392,6 +397,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = ZA2PCCN27W;
@@ -408,9 +414,29 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-framework",
+					"\"TensorFlowLite\"",
+					"-framework",
+					"\"TensorFlowLiteC\"",
+					"-framework",
+					"\"TensorFlowLiteCMetal\"",
+					"-framework",
+					"\"TensorFlowLiteSelectTfOps\"",
+					"-weak_framework",
+					"\"CoreML\"",
+					"-weak_framework",
+					"\"Metal\"",
+					"-force_load",
+					"$(SRCROOT)/Pods/TensorFlowLiteSelectTfOps/Frameworks/TensorFlowLiteSelectTfOps.xcframework/ios-arm64/TensorFlowLiteSelectTfOps.framework/TensorFlowLiteSelectTfOps",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "MichaelLedger.MUSIQ-Demo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -422,6 +448,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = ZA2PCCN27W;
@@ -438,6 +465,25 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-framework",
+					"\"TensorFlowLite\"",
+					"-framework",
+					"\"TensorFlowLiteC\"",
+					"-framework",
+					"\"TensorFlowLiteCMetal\"",
+					"-framework",
+					"\"TensorFlowLiteSelectTfOps\"",
+					"-weak_framework",
+					"\"CoreML\"",
+					"-weak_framework",
+					"\"Metal\"",
+					"-force_load",
+					"$(SRCROOT)/Pods/TensorFlowLiteSelectTfOps/Frameworks/TensorFlowLiteSelectTfOps.xcframework/ios-arm64/TensorFlowLiteSelectTfOps.framework/TensorFlowLiteSelectTfOps",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "MichaelLedger.MUSIQ-Demo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

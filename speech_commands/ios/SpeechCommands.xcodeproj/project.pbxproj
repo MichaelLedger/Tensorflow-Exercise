@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		86CBF50AF75437D91511E28C /* Pods_SpeechCommands.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D21468CBF7FB3BCD5E9CD32D /* Pods_SpeechCommands.framework */; };
 		AA055D862162210E00B25948 /* conv_actions_labels.txt in Resources */ = {isa = PBXBuildFile; fileRef = AA055D842162210E00B25948 /* conv_actions_labels.txt */; };
 		AA055D872162210E00B25948 /* conv_actions_frozen.tflite in Resources */ = {isa = PBXBuildFile; fileRef = AA055D852162210E00B25948 /* conv_actions_frozen.tflite */; };
 		AA1C17622186E2F0006F9564 /* WordCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1C17612186E2F0006F9564 /* WordCell.swift */; };
@@ -23,6 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3A4FDF8E82329367D8CCA364 /* Pods-SpeechCommands.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SpeechCommands.release.xcconfig"; path = "Target Support Files/Pods-SpeechCommands/Pods-SpeechCommands.release.xcconfig"; sourceTree = "<group>"; };
 		AA055D842162210E00B25948 /* conv_actions_labels.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = conv_actions_labels.txt; sourceTree = "<group>"; };
 		AA055D852162210E00B25948 /* conv_actions_frozen.tflite */ = {isa = PBXFileReference; lastKnownFileType = file; path = conv_actions_frozen.tflite; sourceTree = "<group>"; };
 		AA1C17612186E2F0006F9564 /* WordCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordCell.swift; sourceTree = "<group>"; };
@@ -38,6 +40,8 @@
 		AA73C15D216120F90063142C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		AA73C160216126B20063142C /* AudioInputManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioInputManager.swift; sourceTree = "<group>"; };
 		AAE67263215DFA1900C6E344 /* RecognizeCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecognizeCommands.swift; sourceTree = "<group>"; };
+		C58349EEC96C17857B9A9770 /* Pods-SpeechCommands.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SpeechCommands.debug.xcconfig"; path = "Target Support Files/Pods-SpeechCommands/Pods-SpeechCommands.debug.xcconfig"; sourceTree = "<group>"; };
+		D21468CBF7FB3BCD5E9CD32D /* Pods_SpeechCommands.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SpeechCommands.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,12 +49,30 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				86CBF50AF75437D91511E28C /* Pods_SpeechCommands.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		00A5A2C07B40295391106E62 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D21468CBF7FB3BCD5E9CD32D /* Pods_SpeechCommands.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5B45FAC8F0FA8D785589BE73 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				C58349EEC96C17857B9A9770 /* Pods-SpeechCommands.debug.xcconfig */,
+				3A4FDF8E82329367D8CCA364 /* Pods-SpeechCommands.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		AA055D7A2161FC0100B25948 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -92,6 +114,8 @@
 			children = (
 				AA7006CE21526754003E34C0 /* SpeechCommands */,
 				AA7006CD21526754003E34C0 /* Products */,
+				5B45FAC8F0FA8D785589BE73 /* Pods */,
+				00A5A2C07B40295391106E62 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -135,6 +159,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = AA7006F421526757003E34C0 /* Build configuration list for PBXNativeTarget "SpeechCommands" */;
 			buildPhases = (
+				FE33763FFC9CFC5BEDF74069 /* [CP] Check Pods Manifest.lock */,
 				AA31546E2161EE1F004B2732 /* ShellScript */,
 				AA7006C821526754003E34C0 /* Sources */,
 				AA7006C921526754003E34C0 /* Frameworks */,
@@ -215,6 +240,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"$SRCROOT/RunScripts/download_models.sh\"\n";
+		};
+		FE33763FFC9CFC5BEDF74069 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SpeechCommands-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -374,18 +421,19 @@
 		};
 		AA7006F521526757003E34C0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C58349EEC96C17857B9A9770 /* Pods-SpeechCommands.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = ZA2PCCN27W;
 				INFOPLIST_FILE = SpeechCommands/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.tensorflow.SpeechCommands;
+				PRODUCT_BUNDLE_IDENTIFIER = org.tensorflow.gavin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -396,18 +444,19 @@
 		};
 		AA7006F621526757003E34C0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3A4FDF8E82329367D8CCA364 /* Pods-SpeechCommands.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = ZA2PCCN27W;
 				INFOPLIST_FILE = SpeechCommands/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.tensorflow.SpeechCommands;
+				PRODUCT_BUNDLE_IDENTIFIER = org.tensorflow.gavin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.2;

@@ -1,27 +1,35 @@
 PODS:
-  - TensorFlowLiteC (0.0.1-nightly.20230411):
-    - TensorFlowLiteC/Core (= 0.0.1-nightly.20230411)
-  - TensorFlowLiteC/Core (0.0.1-nightly.20230411)
-  - TensorFlowLiteC/Metal (0.0.1-nightly.20230411):
+  - TensorFlowLiteC (0.0.1-nightly.20230417):
+    - TensorFlowLiteC/Core (= 0.0.1-nightly.20230417)
+  - TensorFlowLiteC/Core (0.0.1-nightly.20230417)
+  - TensorFlowLiteC/Metal (0.0.1-nightly.20230417):
     - TensorFlowLiteC/Core
-  - TensorFlowLiteSwift/Core (0.0.1-nightly.20230411):
-    - TensorFlowLiteC (= 0.0.1-nightly.20230411)
-  - TensorFlowLiteSwift/Metal (0.0.1-nightly.20230411):
-    - TensorFlowLiteC/Metal (= 0.0.1-nightly.20230411)
-    - TensorFlowLiteSwift/Core (= 0.0.1-nightly.20230411)
+  - TensorFlowLiteSelectTfOps (0.0.1-nightly.20230417)
+  - TensorFlowLiteSwift/Core (0.0.1-nightly.20230417):
+    - TensorFlowLiteC (= 0.0.1-nightly.20230417)
+  - TensorFlowLiteSwift/Metal (0.0.1-nightly.20230417):
+    - TensorFlowLiteC/Metal (= 0.0.1-nightly.20230417)
+    - TensorFlowLiteSwift/Core (= 0.0.1-nightly.20230417)
+  - TensorFlowLiteTaskVision (0.4.3)
 
 DEPENDENCIES:
+  - TensorFlowLiteSelectTfOps (~> 0.0.1-nightly)
   - TensorFlowLiteSwift/Metal (~> 0.0.1-nightly)
+  - TensorFlowLiteTaskVision (~> 0.4.3)
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - TensorFlowLiteC
+    - TensorFlowLiteSelectTfOps
     - TensorFlowLiteSwift
+    - TensorFlowLiteTaskVision
 
 SPEC CHECKSUMS:
-  TensorFlowLiteC: b1fd088801409002dfb0144294d55dfddcd9fc35
-  TensorFlowLiteSwift: ac6927d8c774910f21656058a2814772876c7d71
+  TensorFlowLiteC: 0ff0b902ca53bb276f3cc701a91dda205891c23e
+  TensorFlowLiteSelectTfOps: 588983e40b33c447bab05cab4467941e9d043ca0
+  TensorFlowLiteSwift: e954facccf44c190c7c930c6f36b67c483412ae4
+  TensorFlowLiteTaskVision: 125d5b49d325ba2cf3938454da5f74a1cbfe0552
 
-PODFILE CHECKSUM: b34866f65c6a7948508f54785fdbcda0025e59ea
+PODFILE CHECKSUM: 5658a423359c4447a26106d205ea4eab61cbbba8
 
 COCOAPODS: 1.12.0
