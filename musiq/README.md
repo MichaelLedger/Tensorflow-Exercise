@@ -1223,3 +1223,78 @@ INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
 1 output(s):
 [] <class 'numpy.float32'>
 ```
+
+## replace saved model input tensor of tensorflow lite converter
+
+To replace the input tensor of a saved TensorFlow Lite model, you can use the tf.lite.Interpreter class in TensorFlow. Here's an example code snippet:
+
+```
+import tensorflow as tf
+
+# Load the saved model
+interpreter = tf.lite.Interpreter(model_path="path/to/saved_model.tflite")
+
+# Get the input and output details
+input_details = interpreter.get_input_details()
+output_details = interpreter.get_output_details()
+
+# Replace the input tensor
+new_input_shape = (1, 224, 224, 3)  # Example new input shape
+interpreter.resize_tensor_input(input_details[0]['index'], new_input_shape)
+interpreter.allocate_tensors()
+
+# Verify the new input shape
+input_details = interpreter.get_input_details()
+print(input_details[0]['shape'])  # Should print (1, 224, 224, 3)
+```
+
+In this code, we first load the saved model using tf.lite.Interpreter. We then get the input and output details using the get_input_details and get_output_details methods. We can then replace the input tensor using the resize_tensor_input method, which takes the index of the input tensor and the new shape as arguments. Finally, we allocate tensors using the allocate_tensors method to apply the changes.
+
+Note that the new input shape must be compatible with the original model's input shape. You can check the original input shape using input_details[0]['shape'].
+
+## AttributeError: 'TFLiteSavedModelConverterV2' object has no attribute 'input_array'
+
+`print('converter.inputs: {}'.format(converter.input_array))`
+
+
+## TFLiteSavedModelConverterV2 replace saved model input tensor
+
+To replace the input tensor of a TFLite saved model, you can use the TFLiteConverter.representative_dataset method. This method allows you to provide a representative dataset that the converter can use to infer the shape and type of the input tensor.
+
+Here's an example of how you can use this method to replace the input tensor of a TFLite saved model:
+```
+import tensorflow as tf
+
+# Load the saved model
+saved_model_path = "path/to/saved_model"
+converter = tf.lite.TFLiteConverter.from_saved_model(saved_model_path)
+
+# Define a representative dataset
+def representative_dataset():
+    # Create a tensor with the same shape and type as the new input tensor
+    input_tensor = tf.ones([1, 224, 224, 3], dtype=tf.float32)
+    yield [input_tensor]
+
+# Replace the input tensor
+converter.representative_dataset = representative_dataset
+
+# Convert the model to a TFLite model
+tflite_model = converter.convert()
+```
+
+In this example, we first load the saved model using tf.lite.TFLiteConverter.from_saved_model. We then define a representative_dataset function that creates a tensor with the same shape and type as the new input tensor. Finally, we set the representative_dataset property of the converter to our representative_dataset function and call the convert method to convert the model to a TFLite model with the new input tensor.
+
+Note that you will need to modify the shape and type of the input tensor in the representative_dataset function to match the shape and type of your new input tensor.
+
+## ValueError: Cannot set tensor: Got value of type FLOAT32 but expected type STRING for input 0, name: serving_default_image_bytes_tensor:0
+
+```
+# Define a representative dataset
+def representative_dataset():
+    # Create a tensor with the same shape and type as the new input tensor
+    input_tensor = tf.ones([1, 224, 224, 3], dtype=tf.float32)
+    yield [input_tensor]
+
+# Replace the input tensor
+converter.representative_dataset = representative_dataset
+```

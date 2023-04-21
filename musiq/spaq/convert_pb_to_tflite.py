@@ -60,10 +60,20 @@ outputs = model.signatures["serving_default"].outputs
 output_tensor = outputs[0]
 print('output: {}'.format(output_tensor))
 
-converter.inputs = [input_tensor]
-converter.outputs = [output_tensor]
+#converter.inputs = [input_tensor]
+#converter.input_array = [input_tensor]
+#converter.outputs = [output_tensor]
 
-print('converter.inputs: {}'.format(converter.inputs))
+# Define a representative dataset
+def representative_dataset():
+    # Create a tensor with the same shape and type as the new input tensor
+    input_tensor = tf.ones([1, 224, 224, 3], dtype=tf.float32)
+    yield [input_tensor]
+
+# Replace the input tensor
+converter.representative_dataset = representative_dataset
+
+print('converter.inputs: {}'.format(converter.representative_dataset))
 
 # Override the model.
 #this.converter = tf.converter({inputs: [input_tensor], outputs: [output_tensor]});
