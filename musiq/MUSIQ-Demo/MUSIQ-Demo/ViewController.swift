@@ -76,7 +76,7 @@ class ViewController: UIViewController {
         // MetalDelegate is not available on iOS Simulator in Xcode versions below 11.
         // If you're not able to run GPU-based inference in iOS simulator, please check
         // your Xcode version.
-        useGPUSwitch.isOn = true
+        useGPUSwitch.isOn = false//test
         
         // Initialize new style transferer instances.
         StyleTransferer.newCPUStyleTransferer { result in
@@ -106,15 +106,17 @@ class ViewController: UIViewController {
             }
         }
         
-        MUSIQTransferer.newGPUMUSIQTransferer { result in
-            switch result {
-            case .success(let transferer):
-                print("[GPU] Success to initialize: \(transferer)")
-                self.gpuMUSIQTransferer = transferer
-            case .error(let wrappedError):
-                print("[GPU] Failed to initialize: \(wrappedError)")
-            }
-        }
+        //test
+        // only support CPU Now
+//        MUSIQTransferer.newGPUMUSIQTransferer { result in
+//            switch result {
+//            case .success(let transferer):
+//                print("[GPU] Success to initialize: \(transferer)")
+//                self.gpuMUSIQTransferer = transferer
+//            case .error(let wrappedError):
+//                print("[GPU] Failed to initialize: \(wrappedError)")
+//            }
+//        }
     }
     
     override func viewDidAppear(_ animated: Bool) {

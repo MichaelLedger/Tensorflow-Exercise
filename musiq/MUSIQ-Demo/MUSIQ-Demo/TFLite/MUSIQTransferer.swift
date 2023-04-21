@@ -40,13 +40,13 @@ class MUSIQTransferer {
                             useMetalDelegate: Bool,
                             completion: @escaping ((Result<MUSIQTransferer>) -> Void)) {
         // Create a dispatch queue to ensure all operations on the Intepreter will run serially.
-//        let tfLiteQueue = DispatchQueue(label: "org.tensorflow.examples.lite.style_transfer")
+        let tfLiteQueue = DispatchQueue(label: "org.tensorflow.examples.lite.style_transfer")
         
         /*
          2023-04-20 18:16:57.353254+0800 MUSIQ-Demo[3576:1230192] invalid mode 'kCFRunLoopCommonModes' provided to CFRunLoopRunSpecific - break on _CFRunLoopError_RunCalledWithInvalidMode to debug. This message will only appear once per execution.
          Failed to invoke the interpreter with error: Failed to copy data to input tensor.
          */
-        let tfLiteQueue = DispatchQueue.main//test
+//        let tfLiteQueue = DispatchQueue.main//test
         
         // Run initialization in background thread to avoid UI freeze.
         tfLiteQueue.async {
@@ -90,6 +90,13 @@ class MUSIQTransferer {
                 
                 // Allocate memory for the model's input `Tensor`s.
                 try predictInterpreter.allocateTensors()
+                
+                //test
+                // Get the input tensor index and shape
+//                let inputIndex = predictInterpreter.input(at: 0)
+                
+                // Create a new tensor with the desired data type and shape
+//                let inputTensor = try! Tensor.allocate(shape: Tensor.Shape([1, 224, 224, 3])), dataType: .string)
                 
 //                let inputTensor = try predictInterpreter.input(at: 0)
 //                print("[inputTensor]:\(inputTensor)")
@@ -202,9 +209,11 @@ class MUSIQTransferer {
 //                        }
 //                    }
 //                    if imageSandboxPath != nil {
-//                        if let imageSandboxPathData = imageSandboxPath!.absoluteString.data(using: .utf8) {
-//                            try self.predictInterpreter.copy(imageSandboxPathData, toInputAt: 0)
-//                        }
+//                        try self.predictInterpreter.copy(imageSandboxPath!.absoluteString, toInputAt: 0)
+////                        try self.predictInterpreter.allocateTensors()
+////                        if let imageSandboxPathData = imageSandboxPath!.absoluteString.data(using: .utf8) {
+////                            try self.predictInterpreter.copy(imageSandboxPathData, toInputAt: 0)
+////                        }
 //                    }
 //                }
                 

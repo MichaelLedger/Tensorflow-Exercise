@@ -970,7 +970,7 @@ import tensorflow as tf
 input_tensor = tf.placeholder(tf.float32, shape=[None, 224, 224, 3])
 ```
 
-In this example, input_tensor is a placeholder tensor with shape [batch_size, 224, 224, 3], where batch_size is the number of input examples in a batch, and 3 represents the number of color channels (red, green, and blue).
+**In this example, input_tensor is a placeholder tensor with shape [batch_size, 224, 224, 3], where batch_size is the number of input examples in a batch, and 3 represents the number of color channels (red, green, and blue).**
 
 You can then use this placeholder tensor as input to your TensorFlow model. For example, if you have a convolutional neural network (CNN) model that takes an input tensor with the same shape, you can pass the input_tensor placeholder as input to the model's tf.keras.layers.Input layer:
 
@@ -1354,3 +1354,118 @@ let outputValues = [String](unsafeUninitializedCapacity: outputShape.dimensions[
 ```
 
 This example assumes that your model has a single input tensor and a single output tensor, and that the input tensor has the same shape as the output tensor. You should modify the code accordingly if your model has a different number or shape of input or output tensors.
+
+## Tensorflow Lite Swift TfLiteTensorCopyFromString define
+
+To define the TfLiteTensorCopyFromString function in Swift for TensorFlow Lite, you can use the following code:
+
+```
+func TfLiteTensorCopyFromString(_ string: String, tensor: UnsafeMutablePointer<TfLiteTensor>) -> Bool {
+    guard let data = string.data(using: .utf8) else {
+        return false
+    }
+    let count = data.count
+    let buffer = UnsafeMutableRawPointer.allocate(byteCount: count, alignment: 1)
+    defer {
+        buffer.deallocate()
+    }
+    data.copyBytes(to: buffer, count: count)
+    return TfLiteTensorCopyFromBuffer(buffer, count, tensor)
+}
+```
+
+This function takes in a string and an UnsafeMutablePointer to a TfLiteTensor and returns a boolean indicating whether the copy was successful. It first converts the string to a Data object using UTF-8 encoding, then allocates a buffer to hold the data. It copies the bytes from the Data object to the buffer, and finally calls the TfLiteTensorCopyFromBuffer function to copy the data to the TfLiteTensor.
+
+You can add this function to your Swift file and use it to copy data from a string to a TfLiteTensor.
+
+
+## Value of type 'UnsafeMutablePointer<TfLiteTensor>' has no member 'data'
+
+```
+guard let cTensor = TfLiteInterpreterGetInputTensor(cInterpreter, Int32(index)) else {
+    throw InterpreterError.allocateTensorsRequired
+}
+let tensorData = cTensor.pointee.data
+```
+
+## TfLiteTensorCopyFromBuffer
+
+c_api.h
+
+```
+/// Copies from the provided input buffer into the tensor's buffer.
+/// REQUIRES: input_data_size == TfLiteTensorByteSize(tensor)
+TFL_CAPI_EXPORT extern TfLiteStatus TfLiteTensorCopyFromBuffer(
+    TfLiteTensor* tensor, const void* input_data, size_t input_data_size);
+```
+
+## Array.withUnsafeBytes{...}
+
+Swift.Collection.Array
+
+```
+    /// Calls the given closure with a pointer to the underlying bytes of the
+    /// array's contiguous storage.
+    ///
+    /// The array's `Element` type must be a *trivial type*, which can be copied
+    /// with just a bit-for-bit copy without any indirection or
+    /// reference-counting operations. Generally, native Swift types that do not
+    /// contain strong or weak references are trivial, as are imported C structs
+    /// and enums.
+    ///
+    /// The following example copies the bytes of the `numbers` array into a
+    /// buffer of `UInt8`:
+    ///
+    ///     var numbers: [Int32] = [1, 2, 3]
+    ///     var byteBuffer: [UInt8] = []
+    ///     numbers.withUnsafeBytes {
+    ///         byteBuffer.append(contentsOf: $0)
+    ///     }
+    ///     // byteBuffer == [1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0]
+    ///
+    /// - Note: This example shows the behavior on a little-endian platform.
+    ///
+    /// - Parameter body: A closure with an `UnsafeRawBufferPointer` parameter
+    ///   that points to the contiguous storage for the array.
+    ///    If no such storage exists, it is created. If `body` has a return value, that value is also
+    ///   used as the return value for the `withUnsafeBytes(_:)` method. The
+    ///   argument is valid only for the duration of the closure's execution.
+    /// - Returns: The return value, if any, of the `body` closure parameter.
+    @inlinable public func withUnsafeBytes<R>(_ body: (UnsafeRawBufferPointer) throws -> R) rethrows -> R
+```
+
+##  `contents` must be scalar but got shape[104]
+
+```
+//test
+do {
+//            try self.resizeInput(at: 0, to: Tensor.Shape([1, 224, 224, 3]))
+    try self.resizeInput(at: 0, to: Tensor.Shape([104]))
+///     Note: After resizing an input tensor, the client **must** explicitly call
+///     `allocateTensors()` before attempting to access the resized tensor data or invoking the
+///     interpreter to perform inference.
+    try allocateTensors()
+} catch let e {
+    throw e
+}
+```
+
+```
+try self.predictInterpreter.invoke()
+```
+
+```
+2023-04-21 15:07:34.255235+0800 MUSIQ-Demo[3872:1375686] invalid mode 'kCFRunLoopCommonModes' provided to CFRunLoopRunSpecific - break on _CFRunLoopError_RunCalledWithInvalidMode to debug. This message will only appear once per execution.
+[image_path]:file:///var/mobile/Containers/Data/Application/81D5EC35-6FCC-42DE-B2A5-895321A19876/Documents/sample.png
+TfLiteTypeName:Optional(0x000000010552f152)
+inputData:Optional(104 bytes)
+inputBytes:[102, 105, 108, 101, 58, 47, 47, 47, 118, 97, 114, 47, 109, 111, 98, 105, 108, 101, 47, 67, 111, 110, 116, 97, 105, 110, 101, 114, 115, 47, 68, 97, 116, 97, 47, 65, 112, 112, 108, 105, 99, 97, 116, 105, 111, 110, 47, 56, 49, 68, 53, 69, 67, 51, 53, 45, 54, 70, 67, 67, 45, 52, 50, 68, 69, 45, 66, 50, 65, 53, 45, 56, 57, 53, 51, 50, 49, 65, 49, 57, 56, 55, 54, 47, 68, 111, 99, 117, 109, 101, 110, 116, 115, 47, 115, 97, 109, 112, 108, 101, 46, 112, 110, 103, 0]
+TensorFlow Lite Error: `contents` must be scalar but got shape[104]
+TensorFlow Lite Error: Node number 1181 (TfLiteFlexDelegate) failed to invoke.
+Failed to invoke the interpreter with error: Must call allocateTensors().
+
+```
+
+https://www.tensorflow.org/api_docs/python/tf/shape
+
+https://www.guru99.com/tensor-tensorflow.html
