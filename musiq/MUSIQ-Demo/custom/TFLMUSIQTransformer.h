@@ -6,6 +6,7 @@
 //
 #import <Foundation/Foundation.h>
 
+#import "TFLMUSIQResult.h"
 //#import "TFLBaseOptions.h"
 //#import "TFLClassificationOptions.h"
 //#import "TFLClassificationResult.h"
@@ -67,9 +68,9 @@ NS_SWIFT_NAME(ImageClassifier)
  * @return A new instance of `TFLMUSIQTransformer` with the given options. `nil` if there is an error
  * in initializing the image classifier.
  */
-+ (nullable instancetype)imageClassifierWithOptions:(TFLMUSIQTransformerOptions *)options
-                                              error:(NSError **)error
-    NS_SWIFT_NAME(classifier(options:));
++ (nullable instancetype)transformWithOptions:(TFLMUSIQTransformerOptions *)options
+                                        error:(NSError **)error
+NS_SWIFT_NAME(classifier(options:));
 
 + (instancetype)new NS_UNAVAILABLE;
 
@@ -90,9 +91,9 @@ NS_SWIFT_NAME(ImageClassifier)
  * there is an error encountered during classification. Please see `TFLClassificationResult` for
  * more details.
  */
-- (nullable TFLClassificationResult *)classifyWithGMLImage:(GMLImage *)image
-                                                     error:(NSError **)error
-    NS_SWIFT_NAME(classify(mlImage:));
+- (nullable TFLMUSIQResult *)transformWithGMLImage:(GMLImage *)image
+                                             error:(NSError **)error
+NS_SWIFT_NAME(classify(mlImage:));
 
 /**
  * Performs classification on the pixels within the specified region of interest of the given
@@ -113,10 +114,10 @@ NS_SWIFT_NAME(ImageClassifier)
  * @return A TFLClassificationResult with one set of results per image classifier head. `nil` if
  * there is an error encountered during classification.
  */
-- (nullable TFLClassificationResult *)classifyWithGMLImage:(GMLImage *)image
-                                          regionOfInterest:(CGRect)roi
-                                                     error:(NSError **)error
-    NS_SWIFT_NAME(classify(mlImage:regionOfInterest:));
+- (nullable TFLMUSIQResult *)transformWithGMLImage:(GMLImage *)image
+                                  regionOfInterest:(CGRect)roi
+                                             error:(NSError **)error
+NS_SWIFT_NAME(classify(mlImage:regionOfInterest:));
 
 - (instancetype)init NS_UNAVAILABLE;
 

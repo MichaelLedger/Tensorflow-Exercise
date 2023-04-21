@@ -10,8 +10,13 @@
 
 #include <stdint.h>
 
+#include "common.h"
 #include "musiq_options.h"
 #include "musiq_result.h"
+#include "base_options.h"
+#include "frame_buffer.h"
+#include "bounding_box.h"
+
 @import TensorFlowLiteTaskVision;
 
 #ifdef __cplusplus
@@ -121,7 +126,7 @@ TfLiteMUSIQResult* TfLiteMUSIQTransformerClassify(
 // MUSIQ is performed based on the input region of interest. Cropping
 // according to this region of interest is prepended to the pre-processing
 // operations.
-TfLiteMUSIQResult* TfLiteMUSIQTransformerClassifyWithRoi(
+TfLiteMUSIQResult* TfLiteMUSIQTransformWithRoi(
     const TfLiteMUSIQTransformer* classifier,
     const TfLiteFrameBuffer* frame_buffer, const TfLiteBoundingBox* roi,
     TfLiteSupportError** error);

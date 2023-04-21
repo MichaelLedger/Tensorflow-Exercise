@@ -257,7 +257,7 @@ extension ViewController {
                     self.musiqTransferResult = musiqTransferResult
                     
                     // Change to show style transfer result
-                    self.segmentedControl.selectedSegmentIndex = 2
+                    self.segmentedControl.selectedSegmentIndex = 0
                     self.onSegmentChanged(self)
                     
                     // Show result metadata
@@ -370,9 +370,10 @@ extension ViewController {
     /// Show processing time on screen.
     private func showMUSIQResult(_ result: MUSIQTransferResult) {
         let timeString = "Preprocessing: \(Int(result.preprocessingTime * 1000))ms.\n"
-        + "Style prediction: \(Int(result.stylePredictTime * 1000))ms.\n"
-        + "Style transfer: \(Int(result.styleTransferTime * 1000))ms.\n"
-        + "Post-processing: \(Int(result.postprocessingTime * 1000))ms.\n"
+        + "Score prediction: \(Int(result.stylePredictTime * 1000))ms.\n"
+//        + "Style transfer: \(Int(result.styleTransferTime * 1000))ms.\n"
+//        + "Post-processing: \(Int(result.postprocessingTime * 1000))ms.\n"
+        + "mean opinion score: \(result.score)"
         
         inferenceStatusLabel.text = timeString
         

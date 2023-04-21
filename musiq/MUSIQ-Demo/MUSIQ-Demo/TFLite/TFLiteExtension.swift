@@ -174,6 +174,11 @@ extension UIImage {
     guard let normalizedImage = normalizeImage(image, resizingTo: size) else {
       return nil
     }
+    //test
+//      let scaledImg = UIImage(cgImage: normalizedImage)
+//      UIImageWriteToSavedPhotosAlbum(scaledImg, nil, nil, nil)
+//      print("[DEBUG] SavedPhotosAlbum:\(scaledImg)")
+      
     guard let data = normalizedImage.dataProvider?.data as Data? else { return nil }
     // TF Lite expects an array of pixels in the form of floats normalized between 0 and 1.
     var floatArray: [T]
@@ -266,7 +271,7 @@ extension UIImage {
       let bigEndian = normalizedImage.bitmapInfo.contains(.byteOrder32Big)
       let littleEndian = normalizedImage.bitmapInfo.contains(.byteOrder32Little)
       guard alphaFirst || alphaLast else { return nil }
-      guard bigEndian || littleEndian else { return nil }
+//      guard bigEndian || littleEndian else { return nil }//test
 
       // Iterate over channels individually. Since the order of the channels in memory
       // may vary, we cannot add channels to the float buffer we pass to TF Lite in the

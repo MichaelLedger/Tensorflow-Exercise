@@ -22,7 +22,7 @@
 import tensorflow as tf
 # tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
 # tf.contrib.lite -> tf.lite
-saved_model_dir = "saved_model"
+saved_model_dir = "../musiq/spaq/saved_model"
 converter = tf.lite.TFLiteConverter.from_saved_model(
     saved_model_dir, signature_keys=['serving_default'])
 converter.optimizations = [tf.lite.Optimize.DEFAULT]
@@ -36,6 +36,6 @@ converter.target_spec.supported_ops = [
 tflite_model = converter.convert()
 
 fo = open(
-    "koniq.tflite", "wb")
+    "../musiq/spaq/spaq.tflite", "wb")
 fo.write(tflite_model)
 fo.close

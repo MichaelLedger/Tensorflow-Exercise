@@ -40,7 +40,13 @@ class MUSIQTransferer {
                             useMetalDelegate: Bool,
                             completion: @escaping ((Result<MUSIQTransferer>) -> Void)) {
         // Create a dispatch queue to ensure all operations on the Intepreter will run serially.
-        let tfLiteQueue = DispatchQueue(label: "org.tensorflow.examples.lite.style_transfer")
+//        let tfLiteQueue = DispatchQueue(label: "org.tensorflow.examples.lite.style_transfer")
+        
+        /*
+         2023-04-20 18:16:57.353254+0800 MUSIQ-Demo[3576:1230192] invalid mode 'kCFRunLoopCommonModes' provided to CFRunLoopRunSpecific - break on _CFRunLoopError_RunCalledWithInvalidMode to debug. This message will only appear once per execution.
+         Failed to invoke the interpreter with error: Failed to copy data to input tensor.
+         */
+        let tfLiteQueue = DispatchQueue.main//test
         
         // Run initialization in background thread to avoid UI freeze.
         tfLiteQueue.async {
@@ -70,6 +76,7 @@ class MUSIQTransferer {
                 }
                 var options = Interpreter.Options()
                 options.threadCount = ProcessInfo.processInfo.processorCount >= 2 ? 2 : 1
+                options.isXNNPackEnabled = false
                 return options
             }
             
@@ -83,6 +90,9 @@ class MUSIQTransferer {
                 
                 // Allocate memory for the model's input `Tensor`s.
                 try predictInterpreter.allocateTensors()
+                
+//                let inputTensor = try predictInterpreter.input(at: 0)
+//                print("[inputTensor]:\(inputTensor)")
                 
                 // Create an MUSIQTransferer instance and return.
                 let MUSIQTransferer = MUSIQTransferer(
@@ -129,8 +139,8 @@ class MUSIQTransferer {
             let startTime: Date = Date()
             var preprocessingTime: TimeInterval = 0
             var stylePredictTime: TimeInterval = 0
-            var styleTransferTime: TimeInterval = 0
-            var postprocessingTime: TimeInterval = 0
+//            var styleTransferTime: TimeInterval = 0
+//            var postprocessingTime: TimeInterval = 0
             
             func timeSinceStart() -> TimeInterval {
                 return abs(startTime.timeIntervalSinceNow)
@@ -168,7 +178,35 @@ class MUSIQTransferer {
                 
                 // Copy the RGB data to the input `Tensor`.
 //                try self.predictInterpreter.copy(styleRGBData, toInputAt: 0)
+                //test
                 try self.predictInterpreter.copy(inputRGBData, toInputAt: 0)
+//                let inputTensor = try self.predictInterpreter.input(at: 0)
+//                print("[inputTensor]:\(inputTensor)")
+//                let byteCount = inputTensor.data.count
+                
+                // input image path
+                // <tf.Tensor 'image_bytes_tensor:0' shape=() dtype=string>
+//                let scaledImage = UIImage(data: inputRGBData)
+//                let scaledImage = image.scaledImage(with: Constants.inputImageSize)
+//                if let image = scaledImage {
+//                    var imageSandboxPath: URL? = nil
+//                    if let data = image.jpegData(compressionQuality: 1) ?? image.pngData() {
+//                        if let directory = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) as NSURL {
+//                            imageSandboxPath = directory.appendingPathComponent("sample.png")
+//                            print("[image_path]:\(imageSandboxPath!)")
+//                            do {
+//                                try data.write(to: imageSandboxPath!)
+//                            } catch {
+//                                print(error.localizedDescription)
+//                            }
+//                        }
+//                    }
+//                    if imageSandboxPath != nil {
+//                        if let imageSandboxPathData = imageSandboxPath!.absoluteString.data(using: .utf8) {
+//                            try self.predictInterpreter.copy(imageSandboxPathData, toInputAt: 0)
+//                        }
+//                    }
+//                }
                 
                 // Run inference by invoking the `Interpreter`.
                 try self.predictInterpreter.invoke()
@@ -193,7 +231,7 @@ class MUSIQTransferer {
                 //        outputTensor = try self.transferInterpreter.output(at: 0)
                 outputTensor = try self.predictInterpreter.output(at: 0)
                 
-                styleTransferTime = timeSinceStart() - stylePredictTime - preprocessingTime
+//                styleTransferTime = timeSinceStart() - stylePredictTime - preprocessingTime
                 
             } catch let error {
                 print("Failed to invoke the interpreter with error: \(error.localizedDescription)")
@@ -204,12 +242,7 @@ class MUSIQTransferer {
             }
             
             // Construct score from output tensor data
-            guard let score = self.postprocessStringData(data: outputTensor.data) else {
-                DispatchQueue.main.async {
-                    completion(.error(MUSIQTransfererror.resultVisualizationError))
-                }
-                return
-            }
+            let score = self.postprocessNIMAData(data: outputTensor.data)
             
             // Construct image from output tensor data
 //            guard let cgImage = self.postprocessImageData(data: outputTensor.data) else {
@@ -221,8 +254,7 @@ class MUSIQTransferer {
             
 //            let outputImage = UIImage(cgImage: cgImage)
             
-            postprocessingTime =
-            timeSinceStart() - stylePredictTime - styleTransferTime - preprocessingTime
+//            postprocessingTime = timeSinceStart() - stylePredictTime - preprocessingTime
             
             // Return the result.
             DispatchQueue.main.async {
@@ -231,9 +263,9 @@ class MUSIQTransferer {
                         MUSIQTransferResult(
                             score: score,
                             preprocessingTime: preprocessingTime,
-                            stylePredictTime: stylePredictTime,
-                            styleTransferTime: styleTransferTime,
-                            postprocessingTime: postprocessingTime
+                            stylePredictTime: stylePredictTime
+//                            styleTransferTime: styleTransferTime,
+//                            postprocessingTime: postprocessingTime
                         )
                     )
                 )
@@ -245,6 +277,31 @@ class MUSIQTransferer {
     private func postprocessStringData(data: Data) -> String? {
         guard let score = String(data: data, encoding: .utf8) else {
             return nil
+        }
+        return score
+    }
+    
+    private func postprocessNIMAData(data: Data) -> Float {
+        let floatArray = data.toArray(type: Float32.self)
+        // calcucate mean score
+        let score = calculateMeanScore(scoreDist: floatArray)
+        return score
+    }
+    
+    private func normalizeLabels(labels: [Float]) -> [Float] {
+        var normalizedLabels: [Float] = []
+        labels.forEach { label in
+            let sum = labels.reduce(0, +)
+            normalizedLabels.append(label / sum)
+        }
+        return normalizedLabels
+    }
+
+    private func calculateMeanScore(scoreDist: [Float]) -> Float {
+        let score_dist = normalizeLabels(labels: scoreDist)
+        var score: Float = 0
+        score_dist.indices.forEach { index in
+            score += score_dist[index] * Float(index+1)
         }
         return score
     }
@@ -321,7 +378,7 @@ class MUSIQTransferer {
 struct MUSIQTransferResult {
     
     /// The Score of input image
-    let score: String
+    let score: Float
     
     /// The resulting image from the style transfer.
 //    let resultImage: UIImage
@@ -334,10 +391,10 @@ struct MUSIQTransferResult {
     let stylePredictTime: TimeInterval
     
     /// The style transfer model run time.
-    let styleTransferTime: TimeInterval
+//    let styleTransferTime: TimeInterval
     
     /// Time required to convert the model output data to a `CGImage`.
-    let postprocessingTime: TimeInterval
+//    let postprocessingTime: TimeInterval
     
 }
 
@@ -377,14 +434,14 @@ private enum Constants {
     // Namespace for quantized Int8 models.
     enum Int8 {
         
-        static let predictModel = "koniq"
+        static let predictModel = "spaq"//"spaq" //"koniq"
         
     }
     
     // Namespace for Float16 models, optimized for GPU inference.
     enum Float16 {
         
-        static let predictModel = "koniq"
+        static let predictModel = "spaq"//"spaq"//"koniq"
         
     }
     
@@ -392,6 +449,6 @@ private enum Constants {
     
 //    static let styleImageSize = CGSize(width: 256, height: 256)
     
-    static let inputImageSize = CGSize(width: 384, height: 384)
+    static let inputImageSize = CGSize(width: 224, height: 224)
     
 }

@@ -23,7 +23,7 @@ typedef struct TfLiteMUSIQModelConfig {
     char* representation_size;
     char* resnet_emb;
     char* transformer;
-}
+} TfLiteMUSIQModelConfig;
 
 // Image preprocessing config.
 typedef struct TfLiteMUSIQPPConfig {
@@ -36,18 +36,18 @@ typedef struct TfLiteMUSIQPPConfig {
     
     // -1 means using all the patches from the full-size image.
     int max_seq_len_from_original_res;
-}
+} TfLiteMUSIQPPConfig;
 
 // Holds settings for any single MUSIQ task.
 typedef struct TfLiteMUSIQOptions {
     // Model backbone config.
-    TfLiteMUSIQModelConfig model_config;
+    struct TfLiteMUSIQModelConfig model_config;
     
     // Number of scores to predict. 10 for AVA and 1 for the other datasets.
     int num_classes;
     
     // image preprocessing config.
-    TfLiteMUSIQPPConfig pp_config;
+    struct TfLiteMUSIQPPConfig pp_config;
     
     // model parameters loaded from checkpoint.
     char* params;
