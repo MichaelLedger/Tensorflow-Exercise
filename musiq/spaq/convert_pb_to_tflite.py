@@ -65,15 +65,15 @@ print('output: {}'.format(output_tensor))
 #converter.outputs = [output_tensor]
 
 # Define a representative dataset
-def representative_dataset():
-    # Create a tensor with the same shape and type as the new input tensor
-    input_tensor = tf.ones([1, 224, 224, 3], dtype=tf.float32)
-    yield [input_tensor]
+#def representative_dataset():
+#    # Create a tensor with the same shape and type as the new input tensor
+#    input_tensor = tf.ones([1, 224, 224, 3], dtype=tf.float32)
+#    yield [input_tensor]
 
 # Replace the input tensor
-converter.representative_dataset = representative_dataset
+#converter.representative_dataset = representative_dataset
 
-print('converter.inputs: {}'.format(converter.representative_dataset))
+print('converter.representative_dataset: {}'.format(converter.representative_dataset))
 
 # Override the model.
 #this.converter = tf.converter({inputs: [input_tensor], outputs: [output_tensor]});
@@ -96,17 +96,21 @@ with open('spaq.tflite', 'wb') as f:
 
 print('==generate success!==')
 
-interpreter = tf.lite.Interpreter(model_path="spaq.tflite")
-interpreter.allocate_tensors()
+#interpreter = tf.lite.Interpreter(model_path="spaq.tflite")
+#interpreter.allocate_tensors()
+#
+## Print input shape and type
+#inputs = interpreter.get_input_details()
+#print('{} input(s):'.format(len(inputs)))
+#for i in range(0, len(inputs)):
+#    print('{} {}'.format(inputs[i]['shape'], inputs[i]['dtype']))
+#
+## Print output shape and type
+#outputs = interpreter.get_output_details()
+#print('\n{} output(s):'.format(len(outputs)))
+#for i in range(0, len(outputs)):
+#    print('{} {}'.format(outputs[i]['shape'], outputs[i]['dtype']))
 
-# Print input shape and type
-inputs = interpreter.get_input_details()
-print('{} input(s):'.format(len(inputs)))
-for i in range(0, len(inputs)):
-    print('{} {}'.format(inputs[i]['shape'], inputs[i]['dtype']))
-
-# Print output shape and type
-outputs = interpreter.get_output_details()
-print('\n{} output(s):'.format(len(outputs)))
-for i in range(0, len(outputs)):
-    print('{} {}'.format(outputs[i]['shape'], outputs[i]['dtype']))
+# Call a python script from another python script?
+import inspect_tflite
+inspect_tflite.inspect()

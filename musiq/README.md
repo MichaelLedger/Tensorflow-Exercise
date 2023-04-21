@@ -1298,3 +1298,59 @@ def representative_dataset():
 # Replace the input tensor
 converter.representative_dataset = representative_dataset
 ```
+
+## Tensorflow Lite Swift allow input tensor type to STRING
+
+To allow input tensor type to STRING in Tensorflow Lite Swift, you can use the Tensor.allocate() method to create a new tensor with the desired data type and shape, and then set its values using the Tensor.copy(from:) method.
+
+Here's an example of how to create a new tensor with a shape of (1, 3) and set its values to an array of strings:
+
+```
+import TensorFlowLite
+
+let tensor = try! Tensor.allocate(shape: [1, 3], dataType: .string)
+tensor.copy(from: ["hello", "world", "!"])
+```
+
+Note that the Tensor.allocate() method throws an error if it fails to allocate memory for the tensor, so you should handle the error appropriately.
+
+Once you have created and populated the input tensor, you can pass it to your Tensorflow Lite model for inference using the Interpreter class. Here's an example of how to do this:
+```
+let interpreter = try! Interpreter(modelPath: "path/to/model.tflite")
+try! interpreter.allocateTensors()
+
+// Get the input tensor index and shape
+let inputIndex = interpreter.inputTensor(at: 0)!
+let inputShape = interpreter.tensorShape(at: inputIndex)
+
+// Create a new tensor with the desired data type and shape
+let inputTensor = try! Tensor.allocate(shape: inputShape.dimensions, dataType: .string)
+
+// Set the input tensor values
+inputTensor.copy(from: ["hello", "world", "!"])
+
+// Set the input tensor as the input for the model
+try! interpreter.setTensor(inputTensor, at: inputIndex)
+
+// Run inference
+try! interpreter.invoke()
+
+// Get the output tensor index and shape
+let outputIndex = interpreter.outputTensor(at: 0)!
+let outputShape = interpreter.tensorShape(at: outputIndex)
+
+// Get the output tensor values
+let outputTensor = try! interpreter.tensor(at: outputIndex)
+let outputValues = [String](unsafeUninitializedCapacity: outputShape.dimensions[0]) { buffer, count in
+    outputTensor.data.withUnsafeBytes { data in
+        for i in 0..<outputShape.dimensions[0] {
+            let offset = i * MemoryLayout<String>.stride
+            let stringPtr = data.baseAddress!.advanced(by: offset).assumingMemoryBound(to: String.self)
+            buffer[i] = stringPtr.pointee
+        }
+        count = outputShape.dimensions[0]
+    }
+}
+```
+
+This example assumes that your model has a single input tensor and a single output tensor, and that the input tensor has the same shape as the output tensor. You should modify the code accordingly if your model has a different number or shape of input or output tensors.
