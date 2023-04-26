@@ -443,14 +443,14 @@ private enum Constants {
     // Namespace for quantized Int8 models.
     enum Int8 {
         
-        static let predictModel = "spaq"//"spaq" //"koniq"
+        static let predictModel = "nima"//"spaq" //"koniq"
         
     }
     
     // Namespace for Float16 models, optimized for GPU inference.
     enum Float16 {
         
-        static let predictModel = "spaq"//"spaq"//"koniq"
+        static let predictModel = "nima"//"spaq"//"koniq"
         
     }
     

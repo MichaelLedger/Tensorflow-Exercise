@@ -106,17 +106,15 @@ class ViewController: UIViewController {
             }
         }
         
-        //test
-        // only support CPU Now
-//        MUSIQTransferer.newGPUMUSIQTransferer { result in
-//            switch result {
-//            case .success(let transferer):
-//                print("[GPU] Success to initialize: \(transferer)")
-//                self.gpuMUSIQTransferer = transferer
-//            case .error(let wrappedError):
-//                print("[GPU] Failed to initialize: \(wrappedError)")
-//            }
-//        }
+        MUSIQTransferer.newGPUMUSIQTransferer { result in
+            switch result {
+            case .success(let transferer):
+                print("[GPU] Success to initialize: \(transferer)")
+                self.gpuMUSIQTransferer = transferer
+            case .error(let wrappedError):
+                print("[GPU] Failed to initialize: \(wrappedError)")
+            }
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
