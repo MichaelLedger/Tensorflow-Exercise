@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		67459E1029F140DC00855644 /* spaq.tflite in Resources */ = {isa = PBXBuildFile; fileRef = 67459E0F29F140DC00855644 /* spaq.tflite */; };
 		6749091729EE290800FC7DE5 /* StyleTransferer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6749091629EE290800FC7DE5 /* StyleTransferer.swift */; };
 		6749091929EE62C000FC7DE5 /* MUSIQTaskVision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6749091829EE62C000FC7DE5 /* MUSIQTaskVision.swift */; };
 		6749098829EE765A00FC7DE5 /* TFLMUSIQTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 6749098229EE765A00FC7DE5 /* TFLMUSIQTransformer.m */; };
@@ -241,7 +240,6 @@
 				676B8FFB29E95F5B006D24A4 /* LaunchScreen.storyboard in Resources */,
 				676B8FF829E95F5B006D24A4 /* Assets.xcassets in Resources */,
 				6749099F29EFD11D00FC7DE5 /* nima.tflite in Resources */,
-				67459E1029F140DC00855644 /* spaq.tflite in Resources */,
 				676B8FF629E95F5A006D24A4 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
