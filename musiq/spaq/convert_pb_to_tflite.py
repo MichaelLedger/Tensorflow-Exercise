@@ -80,10 +80,27 @@ print('converter.representative_dataset: {}'.format(converter.representative_dat
 
 converter.optimizations = [tf.lite.Optimize.DEFAULT]
 converter.experimental_new_converter = True
+
+#https://docs.nvidia.com/deeplearning/frameworks/tf-trt-user-guide/index.html
+#converter.use_dynamic_shape = True
+#PROFILE_STRATEGY="Optimal"
+#converter.dynamic_shape_profile_strategy = PROFILE_STRATEGY
+
 converter.target_spec.supported_ops = [
     tf.lite.OpsSet.TFLITE_BUILTINS, tf.lite.OpsSet.SELECT_TF_OPS]
 converter.allow_custom_ops = True
 tflite_model = converter.convert()
+
+#TFLite interpreter needs to link Flex delegate in order to run the model since it contains the following Select TFop(s):
+#Flex ops: FlexCast, FlexCeil, FlexDecodeJpeg, FlexExtractImagePatches, FlexRealDiv, FlexResizeNearestNeighbor
+
+
+# Print the signatures from the converted model
+interpreter = tf.lite.Interpreter(model_content=tflite_model)
+signatures = interpreter.get_signature_list()
+print('==signatures-begin==')
+print(signatures)
+print('==signatures-end==')
 
 # Save the model
 #fo = open(

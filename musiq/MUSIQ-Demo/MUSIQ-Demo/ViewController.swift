@@ -79,22 +79,22 @@ class ViewController: UIViewController {
         useGPUSwitch.isOn = false//test
         
         // Initialize new style transferer instances.
-        StyleTransferer.newCPUStyleTransferer { result in
-            switch result {
-            case .success(let transferer):
-                self.cpuStyleTransferer = transferer
-            case .error(let wrappedError):
-                print("Failed to initialize: \(wrappedError)")
-            }
-        }
-        StyleTransferer.newGPUStyleTransferer { result in
-            switch result {
-            case .success(let transferer):
-                self.gpuStyleTransferer = transferer
-            case .error(let wrappedError):
-                print("Failed to initialize: \(wrappedError)")
-            }
-        }
+//        StyleTransferer.newCPUStyleTransferer { result in
+//            switch result {
+//            case .success(let transferer):
+//                self.cpuStyleTransferer = transferer
+//            case .error(let wrappedError):
+//                print("Failed to initialize: \(wrappedError)")
+//            }
+//        }
+//        StyleTransferer.newGPUStyleTransferer { result in
+//            switch result {
+//            case .success(let transferer):
+//                self.gpuStyleTransferer = transferer
+//            case .error(let wrappedError):
+//                print("Failed to initialize: \(wrappedError)")
+//            }
+//        }
         
         MUSIQTransferer.newCPUMUSIQTransferer { result in
             switch result {

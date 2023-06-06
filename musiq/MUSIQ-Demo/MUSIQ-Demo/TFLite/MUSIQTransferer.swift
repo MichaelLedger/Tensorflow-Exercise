@@ -89,7 +89,7 @@ class MUSIQTransferer {
                 )
                 
                 // Allocate memory for the model's input `Tensor`s.
-                try predictInterpreter.allocateTensors()
+//                try predictInterpreter.allocateTensors()//test
                 
                 //test
                 // Get the input tensor index and shape
@@ -142,7 +142,14 @@ class MUSIQTransferer {
                           image: UIImage,
                           completion: @escaping ((Result<MUSIQTransferResult>) -> Void)) {
         tfLiteQueue.async {
-            let outputTensor: Tensor
+            
+//            guard let inputTensor = try? self.predictInterpreter.input(at: 0),
+//                  let outputTensor = try? self.predictInterpreter.output(at: 0) else {
+//                fatalError("Failed to get input/output tensors.")
+//                return
+//            }
+            
+//            let outputTensor: Tensor
             let startTime: Date = Date()
             var preprocessingTime: TimeInterval = 0
             var stylePredictTime: TimeInterval = 0
@@ -181,12 +188,55 @@ class MUSIQTransferer {
                     return
                 }
                 
+                guard let imageBytesBase64EncodedString = image.toPngString()
+                else {
+                    DispatchQueue.main.async {
+                        completion(.error(MUSIQTransfererror.invalidImage))
+                    }
+                    print("Failed to convert the input image buffer to Base64 string.")
+                    return
+                }
+                
+                let imageBytesBase64EncodedStringData = Data(imageBytesBase64EncodedString.utf8)
+                
                 preprocessingTime = timeSinceStart()
                 
                 // Copy the RGB data to the input `Tensor`.
 //                try self.predictInterpreter.copy(styleRGBData, toInputAt: 0)
                 //test
-                try self.predictInterpreter.copy(inputRGBData, toInputAt: 0)
+//                try self.predictInterpreter.copy(inputRGBData, toInputAt: 0)
+//                try self.predictInterpreter.copy(imageBytesBase64EncodedStringData, toInputAt: 0)
+                
+//                try self.predictInterpreter.copy(imageBytesBase64EncodedStringData, toInputAt: 0)//test
+                
+                let encode_runner: SignatureRunner = try SignatureRunner(interpreter: self.predictInterpreter, signatureKey: "serving_default")
+//                let signatureInputTensor = try! Tensor(name: "keras_layer_input", dataType: Tensor.DataType.float32, shape: Tensor.Shape([1]), data: imageBytesBase64EncodedStringData)
+//                let signatureInputTensor = try! Tensor.allocate(shape: Tensor.Shape([1])), dataType: .string)
+                /*
+                (lldb) po encode_runner.inputs
+                ▿ 1 element
+                  - 0 : "image_bytes_tensor"
+                 */
+                let signatureInputName = encode_runner.inputs[0]
+                
+                //https://github.com/tensorflow/tensorflow/issues/22377
+                /*
+                 TensorFlow Lite Error: tensorflow/lite/core/subgraph.cc:1103 tensor->dims->size != dims.size() (0 != 1)
+                 Failed to invoke the interpreter with error: Failed to resize input tensor with input name (image_bytes_tensor).
+                 */
+                
+                //https://www.tensorflow.org/lite/guide/inference#run_inference_with_dynamic_shape_model
+                try encode_runner.resizeInput(named: signatureInputName, toShape: Tensor.Shape([imageBytesBase64EncodedStringData.count]))
+                try encode_runner.allocateTensors()
+                
+                try encode_runner.invoke(with: [signatureInputName: imageBytesBase64EncodedStringData])
+                let signatureOutputTensor = try encode_runner.output(named: signatureInputName)
+                print("[signatureOutputTensor]:\(signatureOutputTensor)")
+                
+                // Construct score from output tensor data
+                let score = self.postprocessNIMAData(data: signatureOutputTensor.data)
+                
+                
 //                let inputTensor = try self.predictInterpreter.input(at: 0)
 //                print("[inputTensor]:\(inputTensor)")
 //                let byteCount = inputTensor.data.count
@@ -218,7 +268,7 @@ class MUSIQTransferer {
 //                }
                 
                 // Run inference by invoking the `Interpreter`.
-                try self.predictInterpreter.invoke()
+//                try self.predictInterpreter.invoke()
                 
                 // Get the output `Tensor` to process the inference results.
                 //        let predictResultTensor = try self.predictInterpreter.output(at: 0)
@@ -238,9 +288,24 @@ class MUSIQTransferer {
                 
                 // Get the result tensor
                 //        outputTensor = try self.transferInterpreter.output(at: 0)
-                outputTensor = try self.predictInterpreter.output(at: 0)
+//                outputTensor = try self.predictInterpreter.output(at: 0)
                 
 //                styleTransferTime = timeSinceStart() - stylePredictTime - preprocessingTime
+                
+                // Return the result.
+                DispatchQueue.main.async {
+                    completion(
+                        .success(
+                            MUSIQTransferResult(
+                                score: score,
+                                preprocessingTime: preprocessingTime,
+                                stylePredictTime: stylePredictTime
+    //                            styleTransferTime: styleTransferTime,
+    //                            postprocessingTime: postprocessingTime
+                            )
+                        )
+                    )
+                }
                 
             } catch let error {
                 print("Failed to invoke the interpreter with error: \(error.localizedDescription)")
@@ -250,8 +315,8 @@ class MUSIQTransferer {
                 return
             }
             
-            // Construct score from output tensor data
-            let score = self.postprocessNIMAData(data: outputTensor.data)
+//            // Construct score from output tensor data
+//            let score = self.postprocessNIMAData(data: outputTensor.data)
             
             // Construct image from output tensor data
 //            guard let cgImage = self.postprocessImageData(data: outputTensor.data) else {
@@ -264,21 +329,6 @@ class MUSIQTransferer {
 //            let outputImage = UIImage(cgImage: cgImage)
             
 //            postprocessingTime = timeSinceStart() - stylePredictTime - preprocessingTime
-            
-            // Return the result.
-            DispatchQueue.main.async {
-                completion(
-                    .success(
-                        MUSIQTransferResult(
-                            score: score,
-                            preprocessingTime: preprocessingTime,
-                            stylePredictTime: stylePredictTime
-//                            styleTransferTime: styleTransferTime,
-//                            postprocessingTime: postprocessingTime
-                        )
-                    )
-                )
-            }
         }
     }
     
@@ -443,14 +493,14 @@ private enum Constants {
     // Namespace for quantized Int8 models.
     enum Int8 {
         
-        static let predictModel = "nima"//"spaq" //"koniq"
+        static let predictModel = "spaq" //"nima"//"spaq" //"koniq"
         
     }
     
     // Namespace for Float16 models, optimized for GPU inference.
     enum Float16 {
         
-        static let predictModel = "nima"//"spaq"//"koniq"
+        static let predictModel = "spaq" //"nima"//"spaq"//"koniq"
         
     }
     

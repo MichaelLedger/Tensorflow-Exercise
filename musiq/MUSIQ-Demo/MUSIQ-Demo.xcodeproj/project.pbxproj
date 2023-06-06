@@ -12,7 +12,6 @@
 		6749098829EE765A00FC7DE5 /* TFLMUSIQTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 6749098229EE765A00FC7DE5 /* TFLMUSIQTransformer.m */; };
 		6749099529EE7AA400FC7DE5 /* TFLBaseOptions+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 6749099229EE7AA400FC7DE5 /* TFLBaseOptions+Helpers.m */; };
 		6749099B29EE7D5800FC7DE5 /* TFLMUSIQResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 6749099A29EE7D5800FC7DE5 /* TFLMUSIQResult.m */; };
-		6749099F29EFD11D00FC7DE5 /* nima.tflite in Resources */ = {isa = PBXBuildFile; fileRef = 6749099E29EFD11D00FC7DE5 /* nima.tflite */; };
 		676B8FEF29E95F5A006D24A4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676B8FEE29E95F5A006D24A4 /* AppDelegate.swift */; };
 		676B8FF129E95F5A006D24A4 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676B8FF029E95F5A006D24A4 /* SceneDelegate.swift */; };
 		676B8FF329E95F5A006D24A4 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676B8FF229E95F5A006D24A4 /* ViewController.swift */; };
@@ -23,6 +22,8 @@
 		676B900729E9658E006D24A4 /* TFLiteExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676B900529E9658E006D24A4 /* TFLiteExtension.swift */; };
 		676B900829E9658E006D24A4 /* UIKitExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676B900629E9658E006D24A4 /* UIKitExtension.swift */; };
 		676B900A29E96615006D24A4 /* StylePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676B900929E96615006D24A4 /* StylePickerViewController.swift */; };
+		67D4178D2A2EFBD900529A46 /* spaq.tflite in Resources */ = {isa = PBXBuildFile; fileRef = 67459E0F29F140DC00855644 /* spaq.tflite */; };
+		67D417902A2F050800529A46 /* MUSIQHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67D4178E2A2F050800529A46 /* MUSIQHelper.cpp */; };
 		793B8A8547D06EA80A2100D9 /* Pods_MUSIQ_Demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8836743E999293216357C7F5 /* Pods_MUSIQ_Demo.framework */; };
 /* End PBXBuildFile section */
 
@@ -63,6 +64,8 @@
 		676B900529E9658E006D24A4 /* TFLiteExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TFLiteExtension.swift; sourceTree = "<group>"; };
 		676B900629E9658E006D24A4 /* UIKitExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKitExtension.swift; sourceTree = "<group>"; };
 		676B900929E96615006D24A4 /* StylePickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StylePickerViewController.swift; sourceTree = "<group>"; };
+		67D4178E2A2F050800529A46 /* MUSIQHelper.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MUSIQHelper.cpp; sourceTree = "<group>"; };
+		67D4178F2A2F050800529A46 /* MUSIQHelper.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MUSIQHelper.hpp; sourceTree = "<group>"; };
 		8836743E999293216357C7F5 /* Pods_MUSIQ_Demo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MUSIQ_Demo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -154,7 +157,9 @@
 				6749091629EE290800FC7DE5 /* StyleTransferer.swift */,
 				676B900329E95FA9006D24A4 /* MUSIQTransferer.swift */,
 				6749091829EE62C000FC7DE5 /* MUSIQTaskVision.swift */,
+				67D4178E2A2F050800529A46 /* MUSIQHelper.cpp */,
 				676B900B29E96638006D24A4 /* model */,
+				67D4178F2A2F050800529A46 /* MUSIQHelper.hpp */,
 			);
 			path = TFLite;
 			sourceTree = "<group>";
@@ -239,7 +244,7 @@
 			files = (
 				676B8FFB29E95F5B006D24A4 /* LaunchScreen.storyboard in Resources */,
 				676B8FF829E95F5B006D24A4 /* Assets.xcassets in Resources */,
-				6749099F29EFD11D00FC7DE5 /* nima.tflite in Resources */,
+				67D4178D2A2EFBD900529A46 /* spaq.tflite in Resources */,
 				676B8FF629E95F5A006D24A4 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -286,6 +291,7 @@
 				6749091729EE290800FC7DE5 /* StyleTransferer.swift in Sources */,
 				676B8FF129E95F5A006D24A4 /* SceneDelegate.swift in Sources */,
 				676B900429E95FA9006D24A4 /* MUSIQTransferer.swift in Sources */,
+				67D417902A2F050800529A46 /* MUSIQHelper.cpp in Sources */,
 				6749098829EE765A00FC7DE5 /* TFLMUSIQTransformer.m in Sources */,
 				6749091929EE62C000FC7DE5 /* MUSIQTaskVision.swift in Sources */,
 			);

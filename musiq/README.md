@@ -94,6 +94,9 @@ npz types:
 ```
 
 ```
+(base) ➜  Tensorflow-Exercise git:(main) ✗ pwd
+/Users/gavinxiang/Downloads/Tensorflow-Exercise
+
 (base) ➜  Tensorflow-Exercise git:(main) ✗ python3 -m musiq.run_predict_image \
   --ckpt_path=/Users/gavinxiang/Downloads/Tensorflow-Exercise/musiq/tmp/musiq-spaq_ckpt.npz \
   --image_path=/Users/gavinxiang/Downloads/Tensorflow-Exercise/musiq/tmp/image9.png
@@ -1469,3 +1472,264 @@ Failed to invoke the interpreter with error: Must call allocateTensors().
 https://www.tensorflow.org/api_docs/python/tf/shape
 
 https://www.guru99.com/tensor-tensorflow.html
+
+## Convert Core ML Model from TensorFlow
+
+https://coremltools.readme.io/docs/tensorflow-2
+
+1. Download the MobileNet SavedModel directory from imagenet in TensorFlow Hub.
+```
+# Tested with TensorFlow 2.6.2
+import tensorflow as tf
+import tensorflow_hub as tf_hub
+import numpy as np
+
+model = tf.keras.Sequential([
+        tf.keras.layers.InputLayer(input_shape=(192, 192, 3)),
+        tf_hub.KerasLayer(
+          "https://tfhub.dev/google/imagenet/mobilenet_v2_050_192/classification/4"
+        )
+])
+
+model.build([1, 192, 192, 3])  # Batch input shape.
+```
+
+2. Load the model as a Keras model, and ensure that it is loaded correctly by applying a prediction call.
+```
+# random input data to check that predict works
+x = np.random.rand(1, 192, 192, 3)
+tf_out = model.predict([x])
+```
+
+3. Convert the model to an ML program without specifying the input type, in order to generate a multidimensional array (MLMultiArray) input for convenience in checking predictions:
+```
+import coremltools as ct
+
+# convert to Core ML and check predictions
+mlmodel = ct.convert(model, convert_to="mlprogram")
+```
+
+4. Since the model operates on images, convert with the image input type before saving the model as a Core ML model package:
+```
+coreml_out_dict = mlmodel.predict({"image":x})
+coreml_out = list(coreml_out_dict.values())[0]
+np.testing.assert_allclose(tf_out, coreml_out, rtol=1e-2, atol=1e-1)
+
+# convert to an image input Core ML model
+# mobilenet model expects images to be normalized in the interval [-1,1]
+# hence bias of -1 and scale of 1/127
+mlmodel = ct.convert(model, convert_to="mlprogram",
+                    inputs=[ct.ImageType(bias=[-1,-1,-1], scale=1/127)])
+
+mlmodel.save("mobilenet.mlpackage")
+```
+
+## Check keras model summary & weights & inputs & outputs & config
+
+**Keras replacing input layer**
+
+https://stackoverflow.com/questions/49546922/keras-replacing-input-layer
+
+```
+print('============== model.get_config:', model.get_config())
+model.summary()
+model.get_weights()
+print('============== input_tensor:', model.input)
+print('============== output_tensor:', model.output)
+```
+
+## Swift tensorflow lite model predict with signatures like serving_default
+
+To use a TensorFlow Lite model in Swift with signatures like serving_default, you can follow these steps:
+
+1. Load the model using the Interpreter class from the TensorFlow Lite library. You can do this by providing the path to the model file and the options for the interpreter. Here's an example:
+```
+guard let interpreter = try? Interpreter(modelPath: "model.tflite") else {
+    fatalError("Failed to create interpreter.")
+}
+```
+2. Get the input and output tensors of the model. You can do this by using the inputTensor(at:) and outputTensor(at:) methods of the interpreter. Here's an example:
+```
+guard let inputTensor = try? interpreter.inputTensor(at: 0),
+      let outputTensor = try? interpreter.outputTensor(at: 0) else {
+    fatalError("Failed to get input/output tensors.")
+}
+```
+3. Prepare the input data for the model. This will depend on the input tensor shape and data type. Here's an example for a 1D float input tensor:
+```
+let inputData: [Float] = [1.0, 2.0, 3.0, 4.0]
+try? inputTensor.copy(from: inputData)
+```
+4. Run the model inference by calling the invoke() method of the interpreter. Here's an example:
+```
+try? interpreter.invoke()
+```
+5. Get the output data from the model. This will depend on the output tensor shape and data type. Here's an example for a 1D float output tensor:
+```
+var outputData = [Float](repeating: 0, count: outputTensor.shape.dimensions[1])
+try? outputTensor.copy(to: &outputData)
+```
+Note that the serving_default signature is just a naming convention used by TensorFlow Serving. It doesn't have any special meaning in TensorFlow Lite. However, you can still use the same input and output tensor names as defined in the serving_default signature if you want to 
+
+
+## Failed to resize input tensor with input name (image_bytes_tensor)
+
+//  MUSIQTransferer.swift
+```
+                let encode_runner: SignatureRunner = try SignatureRunner(interpreter: self.predictInterpreter, signatureKey: "serving_default")
+//                let signatureInputTensor = try! Tensor(name: "keras_layer_input", dataType: Tensor.DataType.float32, shape: Tensor.Shape([1]), data: imageBytesBase64EncodedStringData)
+//                let signatureInputTensor = try! Tensor.allocate(shape: Tensor.Shape([1])), dataType: .string)
+                /*
+                (lldb) po encode_runner.inputs
+                ▿ 1 element
+                  - 0 : "image_bytes_tensor"
+                 */
+                let signatureInputName = encode_runner.inputs[0]
+                
+                //https://github.com/tensorflow/tensorflow/issues/22377
+                /*
+                 TensorFlow Lite Error: tensorflow/lite/core/subgraph.cc:1103 tensor->dims->size != dims.size() (0 != 1)
+                 Failed to invoke the interpreter with error: Failed to resize input tensor with input name (image_bytes_tensor).
+                 */
+                
+                //https://www.tensorflow.org/lite/guide/inference#run_inference_with_dynamic_shape_model
+                try encode_runner.resizeInput(named: signatureInputName, toShape: Tensor.Shape([imageBytesBase64EncodedStringData.count]))
+                try encode_runner.allocateTensors()
+                
+                try encode_runner.invoke(with: [signatureInputName: imageBytesBase64EncodedStringData])
+                let signatureOutputTensor = try encode_runner.output(named: signatureInputName)
+                print("[signatureOutputTensor]:\(signatureOutputTensor)")
+                
+                // Construct score from output tensor data
+                let score = self.postprocessNIMAData(data: signatureOutputTensor.data)
+```
+
+```
+TensorFlow Lite Error: tensorflow/lite/core/subgraph.cc:1103 tensor->dims->size != dims.size() (0 != 1)
+Failed to invoke the interpreter with error: Failed to resize input tensor with input name (image_bytes_tensor).
+```
+
+https://github.com/tensorflow/tensorflow/issues/22106#issuecomment-428409506
+
+```
+./bazel-bin/tensorflow/contrib/lite/toco/toco \
+  --input_file=$INPUT_PB_GRAPH \
+  --output_file=$OUTPUT_TFLITE_FILE \
+  --input_format=TENSORFLOW_GRAPHDEF --output_format=TFLITE \
+  --inference_type=QUANTIZED_UINT8 \
+  --input_shapes="1,300, 300,3" \
+  --input_arrays=normalized_input_image_tensor \
+--output_arrays='TFLite_Detection_PostProcess','TFLite_Detection_PostProcess:1','TFLite_Detection_PostProcess:2','TFLite_Detection_PostProcess:3' \
+  --std_values=128.0 --mean_values=128.0 \
+  --allow_custom_ops --default_ranges_min=0 --default_ranges_max=6
+```
+
+## Run inference with dynamic shape model
+
+https://www.tensorflow.org/lite/guide/inference#run_inference_with_dynamic_shape_model
+
+If you want to run a model with dynamic input shape, resize the input shape before running inference. Otherwise, the None shape in Tensorflow models will be replaced by a placeholder of 1 in TFLite models.
+
+The following examples show how to resize the input shape before running inference in different languages. All the examples assume that the input shape is defined as [1/None, 10], and need to be resized to [3, 10].
+
+###### C++ {.new-tab} 
+```
+c++ 
+// Resize input tensors before allocate tensors
+interpreter->ResizeInputTensor(/*tensor_index=*/0, std::vector{3,10});
+interpreter->AllocateTensors();
+``` 
+
+###### Python {.new-tab} 
+```
+python 
+# Load the TFLite model in TFLite Interpreter 
+interpreter = tf.lite.Interpreter(model_path=TFLITE_FILE_PATH) 
+# Resize input shape for dynamic shape model and allocate tensor 
+interpreter.resize_tensor_input(interpreter.get_input_details()[0]['index'], [3, 10]) 
+interpreter.allocate_tensors() 
+# Get input and output tensors. 
+input_details = interpreter.get_input_details() 
+output_details = interpreter.get_output_details()
+```
+
+## Signatures in TensorFlow Lite
+
+**TensorFlow Lite supports converting TensorFlow model's input/output specifications to TensorFlow Lite models. The input/output specifications are called "signatures". Signatures can be specified when building a SavedModel or creating concrete functions.**
+
+https://www.tensorflow.org/lite/guide/signatures
+
+```
+// C++
+SignatureRunner* encode_runner =
+    interpreter->GetSignatureRunner("encode");
+encode_runner->ResizeInputTensor("x", {100});
+encode_runner->AllocateTensors();
+
+TfLiteTensor* input_tensor = encode_runner->input_tensor("x");
+float* input = GetTensorData<float>(input_tensor);
+// Fill `input`.
+
+encode_runner->Invoke();
+
+const TfLiteTensor* output_tensor = encode_runner->output_tensor(
+    "encoded_result");
+float* output = GetTensorData<float>(output_tensor);
+// Access `output`.
+```
+
+**Known limitations**
+
+> As TFLite interpreter does not gurantee thread safety, the signature runners from the same interpreter won't be executed concurrently.
+> Support for C/iOS/Swift is not available yet.
+
+## TFLite not support Dynamic input size
+
+https://github.com/tensorflow/tensorflow/issues/24607#issuecomment-580951962
+
+We added support for unknown dimensions in TensorFlow Lite today (5591208).
+
+**Can you try converting your model again with tonight's (1/31) tf-nightly once it's released (`pip install tf-nightly`). **
+
+```
+➜ conda activate base
+
+(base) ➜  spaq git:(main) ✗ pip3 install tf-nightly
+
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+tensorflow-macos 2.12.0 requires keras<2.13,>=2.12.0, but you have keras 2.13.1rc0 which is incompatible.
+tensorflow-macos 2.12.0 requires tensorboard<2.13,>=2.12, but you have tensorboard 2.13.0 which is incompatible.
+tensorflow-macos 2.12.0 requires tensorflow-estimator<2.13,>=2.12.0, but you have tensorflow-estimator 2.13.0rc0 which is incompatible.
+Successfully installed flatbuffers-23.5.26 keras-2.13.1rc0 tensorboard-2.13.0 tensorflow-estimator-2.13.0rc0 tf-nightly-2.14.0.dev20230601 tf-nightly-macos-2.14.0.dev20230601
+```
+
+https://stackoverflow.com/questions/62465620/error-keras-requires-tensorflow-2-2-or-higher
+
+```
+(base) ➜  spaq git:(main) ✗ pip install keras==2.12.0
+Collecting keras==2.12.0
+  Using cached keras-2.12.0-py2.py3-none-any.whl (1.7 MB)
+Installing collected packages: keras
+  Attempting uninstall: keras
+    Found existing installation: keras 2.13.1rc0
+    Uninstalling keras-2.13.1rc0:
+      Successfully uninstalled keras-2.13.1rc0
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+tf-nightly-macos 2.14.0.dev20230601 requires keras<2.14,>=2.13.1rc0, but you have keras 2.12.0 which is incompatible.
+tensorflow-macos 2.12.0 requires tensorboard<2.13,>=2.12, but you have tensorboard 2.13.0 which is incompatible.
+tensorflow-macos 2.12.0 requires tensorflow-estimator<2.13,>=2.12.0, but you have tensorflow-estimator 2.13.0rc0 which is incompatible.
+Successfully installed keras-2.12.0
+
+pip install tensorboard==2.12
+pip install tensorflow-estimator==2.12.0
+```
+
+**Convert the model with `experimental_new_converter = True`.**
+
+When you load the model it should have an additional field shape_signature that contains the shape with any unknown dimensions marked with -1. shape will have those dimensions marked with 1.
+
+You can then call ResizeInputTensor with the desired shape when running the interpreter. The generated model will only work on the latest TensorFlow version (i.e. the interpreter on the tf-nightly version you are running).
+
+If it does not work, can you provide a detailed error and repro instructions?
+
+https://stackoverflow.com/questions/55701663/input-images-with-dynamic-dimensions-in-tensorflow-lite

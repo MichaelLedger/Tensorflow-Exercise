@@ -20,6 +20,16 @@ import UIKit
 
 /// Extension of iOS classes that is useful for working with TensorFlow Lite computer vision models.
 extension UIImage {
+    
+    func toPngString() -> String? {
+        let data = self.pngData()
+        return data?.base64EncodedString(options: .endLineWithLineFeed)
+    }
+    
+    func toJpegString(compressionQuality cq: CGFloat) -> String? {
+        let data = self.jpegData(compressionQuality: cq)
+        return data?.base64EncodedString(options: .endLineWithLineFeed)
+    }
 
   /// Creates and returns a new image scaled to the given size. The image preserves its original PNG
   /// or JPEG bitmap info.
@@ -374,6 +384,18 @@ extension UIImage {
 
 // MARK: - Data
 
+
+struct ImageHeaderData {
+    static var PNG: [UInt8] = [0x89]
+    static var JPEG: [UInt8] = [0xFF]
+    static var GIF: [UInt8] = [0x47]
+    static var TIFF_01: [UInt8] = [0x49]
+    static var TIFF_02: [UInt8] = [0x4D]
+}
+enum ImageFormat {
+    case Unknown, PNG, JPEG, GIF, TIFF
+}
+
 extension Data {
   /// Creates a new buffer by copying the buffer pointer of the given array.
   ///
@@ -391,6 +413,19 @@ extension Data {
     _ = array.withUnsafeMutableBytes { copyBytes(to: $0) }
     return array
   }
+
+    var imageFormat: ImageFormat {
+        var buffer = [UInt8](repeating: 0, count: 1)
+        copyBytes(to: &buffer, from: 0..<1)
+        if buffer == ImageHeaderData.PNG { return .PNG }
+        if buffer == ImageHeaderData.JPEG { return .JPEG }
+        if buffer == ImageHeaderData.GIF { return .GIF }
+        if buffer == ImageHeaderData.TIFF_01 ||
+            buffer == ImageHeaderData.TIFF_02 {
+            return .TIFF
+        }
+        return .Unknown
+    }
 }
 
 // MARK: - Constants

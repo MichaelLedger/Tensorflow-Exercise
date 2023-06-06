@@ -3,6 +3,10 @@
 *.pb
 *.npz
 
+# Core ML Package/Model
+*.mlpackage
+*.mlmodel
+
 # Miniforge
 Mambaforge-Darwin-arm64.sh
 
