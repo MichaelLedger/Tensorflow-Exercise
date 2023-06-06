@@ -1,5 +1,12 @@
 import tensorflow as tf
 
+#python -c 'import tensorflow as tf; print(tf.__version__)'  # for Python 2
+#python3 -c 'import tensorflow as tf; print(tf.__version__)'  # for Python 3
+
+#https://www.tensorflow.org/install/source#macos
+#tensorflow.__version: 2.14.0-dev20230601
+print("tensorflow.__version:", tf.__version__)
+
 def inspect():
     interpreter = tf.lite.Interpreter(model_path="spaq.tflite")
     interpreter.allocate_tensors()

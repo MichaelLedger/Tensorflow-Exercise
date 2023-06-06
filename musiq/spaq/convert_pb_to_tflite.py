@@ -31,8 +31,8 @@ import numpy as np
 saved_model_dir = "saved_model"
 model = tf.saved_model.load(saved_model_dir)
 
-converter = tf.lite.TFLiteConverter.from_saved_model(
-    saved_model_dir, signature_keys=['serving_default'])
+#https://www.tensorflow.org/api_docs/python/tf/lite/TFLiteConverter
+converter = tf.lite.TFLiteConverter.from_saved_model(saved_model_dir, signature_keys=['serving_default'])
 # Load the checkpoints from the .npz file
 
 # use the load_weights method of the Keras model
@@ -78,23 +78,43 @@ print('converter.representative_dataset: {}'.format(converter.representative_dat
 # Override the model.
 #this.converter = tf.converter({inputs: [input_tensor], outputs: [output_tensor]});
 
-converter.optimizations = [tf.lite.Optimize.DEFAULT]
 converter.experimental_new_converter = True
+#https://github.com/tensorflow/tensorflow/issues/24607#issuecomment-587562611
+#dynamic shapes not being supported in TFLite quantization yet
+converter.experimental_new_quantizer = True
+converter.experimental_enable_resource_variables = True
+#converter.optimizations = [tf.lite.Optimize.DEFAULT]
+converter.optimizations = []  # this was the default behavior
 
 #https://docs.nvidia.com/deeplearning/frameworks/tf-trt-user-guide/index.html
 #converter.use_dynamic_shape = True
 #PROFILE_STRATEGY="Optimal"
 #converter.dynamic_shape_profile_strategy = PROFILE_STRATEGY
 
+#https://www.tensorflow.org/lite/guide/ops_custom
 converter.target_spec.supported_ops = [
     tf.lite.OpsSet.TFLITE_BUILTINS, tf.lite.OpsSet.SELECT_TF_OPS]
 converter.allow_custom_ops = True
+
+#https://www.tensorflow.org/text/guide/text_tf_lite
+
+#https://www.tensorflow.org/lite/guide/op_select_allowlist#users_defined_operators
+converter.target_spec.experimental_select_user_tf_ops = [
+    'FlexCast',
+    'FlexCeil',
+    'FlexDecodeJpeg',
+    'FlexExtractImagePatches',
+    'FlexRealDiv',
+    'FlexResizeNearestNeighbor',
+]
+
+print("experimental_new_converter:", converter.experimental_new_converter)  # outputs True
 tflite_model = converter.convert()
 
 #TFLite interpreter needs to link Flex delegate in order to run the model since it contains the following Select TFop(s):
 #Flex ops: FlexCast, FlexCeil, FlexDecodeJpeg, FlexExtractImagePatches, FlexRealDiv, FlexResizeNearestNeighbor
 
-
+#https://www.tensorflow.org/lite/guide/signatures
 # Print the signatures from the converted model
 interpreter = tf.lite.Interpreter(model_content=tflite_model)
 signatures = interpreter.get_signature_list()

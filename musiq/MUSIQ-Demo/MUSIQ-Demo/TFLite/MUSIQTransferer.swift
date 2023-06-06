@@ -89,7 +89,7 @@ class MUSIQTransferer {
                 )
                 
                 // Allocate memory for the model's input `Tensor`s.
-//                try predictInterpreter.allocateTensors()//test
+                try predictInterpreter.allocateTensors()
                 
                 //test
                 // Get the input tensor index and shape
@@ -217,7 +217,20 @@ class MUSIQTransferer {
                 ▿ 1 element
                   - 0 : "image_bytes_tensor"
                  */
-                let signatureInputName = encode_runner.inputs[0]
+                
+                try encode_runner.allocateTensors()
+                
+                let signature_input_name = encode_runner.inputs[0]
+                
+//                let signature_input = try encode_runner.input(named: signature_input_name)
+                
+                let signature_input_custom = Tensor(
+                  name: signature_input_name,
+                  dataType: Tensor.DataType.float32,
+                  shape: Tensor.Shape.init(-1),
+                  data: imageBytesBase64EncodedStringData,
+                  quantizationParameters: nil
+                )
                 
                 //https://github.com/tensorflow/tensorflow/issues/22377
                 /*
@@ -225,12 +238,36 @@ class MUSIQTransferer {
                  Failed to invoke the interpreter with error: Failed to resize input tensor with input name (image_bytes_tensor).
                  */
                 
+                // Only unknown dimensions can be resized with this function.
+                /*
+                 /// Resizes the input tensor identified as `input_name` to be the dimensions
+                 /// specified by `input_dims` and `input_dims_size`. Only unknown dimensions can
+                 /// be resized with this function. Unknown dimensions are indicated as `-1` in
+                 /// the `dims_signature` attribute of a TfLiteTensor.
+                 ///
+                 /// Returns status of failure or success. Note that this doesn't actually resize
+                 /// any existing buffers. A call to TfLiteSignatureRunnerAllocateTensors() is
+                 /// required to change the tensor input buffer.
+                 ///
+                 /// NOTE: This function is similar to TfLiteInterpreterResizeInputTensorStrict()
+                 /// and not TfLiteInterpreterResizeInputTensor().
+                 ///
+                 /// NOTE: `input_name` must match the name of an input in the signature.
+                 ///
+                 /// NOTE: This function makes a copy of the input dimensions, so the caller can
+                 /// safely deallocate `input_dims` immediately after this function returns.
+                 ///
+                 /// WARNING: This is an experimental API and subject to change.
+                 */
                 //https://www.tensorflow.org/lite/guide/inference#run_inference_with_dynamic_shape_model
-                try encode_runner.resizeInput(named: signatureInputName, toShape: Tensor.Shape([imageBytesBase64EncodedStringData.count]))
+//                try encode_runner.resizeInput(named: signatureInputName, toShape: Tensor.Shape([imageBytesBase64EncodedStringData.count]))
+                try encode_runner.resizeInput(named: signature_input_name, toShape: signature_input_custom.shape)
+                // Note: After resizing an input tensor, the client **must** explicitly call
+                // `allocateTensors()` before attempting to access the resized tensor data.
                 try encode_runner.allocateTensors()
                 
-                try encode_runner.invoke(with: [signatureInputName: imageBytesBase64EncodedStringData])
-                let signatureOutputTensor = try encode_runner.output(named: signatureInputName)
+                try encode_runner.invoke(with: [signature_input_name: imageBytesBase64EncodedStringData])
+                let signatureOutputTensor = try encode_runner.output(named: signature_input_name)
                 print("[signatureOutputTensor]:\(signatureOutputTensor)")
                 
                 // Construct score from output tensor data

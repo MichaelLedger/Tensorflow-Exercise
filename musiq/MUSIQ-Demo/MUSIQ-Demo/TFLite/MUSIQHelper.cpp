@@ -8,6 +8,8 @@
 #include "MUSIQHelper.hpp"
 #include <TensorFlowLiteC/TensorFlowLiteC.h>
 
+//https://www.tensorflow.org/lite/guide/signatures
+
 //SignatureRunner* encode_runner =
 //    interpreter->GetSignatureRunner("encode");
 //encode_runner->ResizeInputTensor("x", {100});

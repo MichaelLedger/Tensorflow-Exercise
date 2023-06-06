@@ -157,9 +157,9 @@
 				6749091629EE290800FC7DE5 /* StyleTransferer.swift */,
 				676B900329E95FA9006D24A4 /* MUSIQTransferer.swift */,
 				6749091829EE62C000FC7DE5 /* MUSIQTaskVision.swift */,
+				67D4178F2A2F050800529A46 /* MUSIQHelper.hpp */,
 				67D4178E2A2F050800529A46 /* MUSIQHelper.cpp */,
 				676B900B29E96638006D24A4 /* model */,
-				67D4178F2A2F050800529A46 /* MUSIQHelper.hpp */,
 			);
 			path = TFLite;
 			sourceTree = "<group>";

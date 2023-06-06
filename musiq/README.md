@@ -1733,3 +1733,46 @@ You can then call ResizeInputTensor with the desired shape when running the inte
 If it does not work, can you provide a detailed error and repro instructions?
 
 https://stackoverflow.com/questions/55701663/input-images-with-dynamic-dimensions-in-tensorflow-lite
+
+## Convert model to TensorFlow Lite format
+
+https://www.tensorflow.org/lite/examples/on_device_training/overview#convert_model_to_tensorflow_lite_format
+
+```
+SAVED_MODEL_DIR = "saved_model"
+
+tf.saved_model.save(
+    m,
+    SAVED_MODEL_DIR,
+    signatures={
+        'train':
+            m.train.get_concrete_function(),
+        'infer':
+            m.infer.get_concrete_function(),
+        'save':
+            m.save.get_concrete_function(),
+        'restore':
+            m.restore.get_concrete_function(),
+    })
+
+# Convert the model
+converter = tf.lite.TFLiteConverter.from_saved_model(SAVED_MODEL_DIR)
+converter.target_spec.supported_ops = [
+    tf.lite.OpsSet.TFLITE_BUILTINS,  # enable TensorFlow Lite ops.
+    tf.lite.OpsSet.SELECT_TF_OPS  # enable TensorFlow ops.
+]
+converter.experimental_enable_resource_variables = True
+tflite_model = converter.convert()
+```
+
+## Google TFlite Sample
+
+https://tfhub.dev/tensorflow/lite-model/albert_lite_base/squadv1/1
+
+https://www.tensorflow.org/lite/examples/bert_qa/overview
+
+https://github.com/tensorflow/examples/tree/master/lite/examples/bert_qa/ios
+
+## Tensorflow on Mac M1
+
+https://developer.apple.com/forums/thread/691578
