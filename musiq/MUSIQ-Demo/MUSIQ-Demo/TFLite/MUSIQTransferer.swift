@@ -207,7 +207,11 @@ class MUSIQTransferer {
 //                try self.predictInterpreter.copy(inputRGBData, toInputAt: 0)
 //                try self.predictInterpreter.copy(imageBytesBase64EncodedStringData, toInputAt: 0)
                 
-//                try self.predictInterpreter.copy(imageBytesBase64EncodedStringData, toInputAt: 0)//test
+                try self.predictInterpreter.resizeInput(at: 0, to: Tensor.Shape([imageBytesBase64EncodedStringData.count]))
+                try self.predictInterpreter.allocateTensors()
+                try self.predictInterpreter.copy(imageBytesBase64EncodedStringData, toInputAt: 0)
+                let resizedInterpreterInput = try self.predictInterpreter.input(at: 0)
+                print("resizedInterpreterInput:\(resizedInterpreterInput.shape)")
                 
                 let encode_runner: SignatureRunner = try SignatureRunner(interpreter: self.predictInterpreter, signatureKey: "serving_default")
 //                let signatureInputTensor = try! Tensor(name: "keras_layer_input", dataType: Tensor.DataType.float32, shape: Tensor.Shape([1]), data: imageBytesBase64EncodedStringData)

@@ -1776,3 +1776,69 @@ https://github.com/tensorflow/examples/tree/master/lite/examples/bert_qa/ios
 ## Tensorflow on Mac M1
 
 https://developer.apple.com/forums/thread/691578
+
+## EXC_BAD_ACCESS crash error: Understanding and solving it
+
+You can enable the Address Sanitizer in the scheme settings of your app under diagnostics:
+
+Once enabled, you can start reproducing the crash again. The Address Sanitizer will pause the app whenever it detects a memory issue. See whether it finds any memory issues, solve them, and verify whether the EXC_BAD_ACCESS is still occurring.
+
+**Run -> Diagnostics -> Runtime Sanitization -> Address Sanitizer -> Enable**
+
+## cTensor.pointee.allocation_type
+
+```
+  /// Copies the given data to the input `Tensor` at the given index.
+  ///
+  /// - Parameters:
+  ///   - data: The data to be copied to the input `Tensor`'s data buffer.
+  ///   - index: The index for the input `Tensor`.
+  /// - Throws: An error if the `data.count` does not match the input tensor's `data.count` or if
+  ///     the given index is invalid.
+  /// - Returns: The input `Tensor` with the copied data.
+  @discardableResult
+  public func copy(_ data: Data, toInputAt index: Int) throws -> Tensor {
+    let maxIndex = inputTensorCount - 1
+    guard case 0...maxIndex = index else {
+      throw InterpreterError.invalidTensorIndex(index: index, maxIndex: maxIndex)
+    }
+    guard let cTensor = TfLiteInterpreterGetInputTensor(cInterpreter, Int32(index)) else {
+      throw InterpreterError.allocateTensorsRequired
+    }
+
+    /*
+     (lldb) po cTensor.pointee.allocation_type
+     ▿ TfLiteAllocationType
+       - rawValue : 4
+     (TfLiteAllocationType) .kTfLiteDynamic
+     */
+//    let byteCount = TfLiteTensorByteSize(cTensor)
+//    guard data.count == byteCount else {
+//      throw InterpreterError.invalidTensorDataCount(provided: data.count, required: byteCount)
+//    }
+
+    #if swift(>=5.0)
+      let status = data.withUnsafeBytes {
+        TfLiteTensorCopyFromBuffer(cTensor, $0.baseAddress, data.count)
+      }
+    #else
+      let status = data.withUnsafeBytes { TfLiteTensorCopyFromBuffer(cTensor, $0, data.count) }
+    #endif  // swift(>=5.0)
+    guard status == kTfLiteOk else { throw InterpreterError.failedToCopyDataToInputTensor }
+    return try input(at: index)
+  }
+```
+
+```
+    case .failedToCopyDataToInputTensor:
+      return "Failed to copy data to input tensor."
+```
+
+```
+[CPU] Success to initialize: MUSIQ_Demo.MUSIQTransferer
+Failed to create the interpreter with error: Failed to create the interpreter.
+[GPU] Failed to initialize: internalError(Failed to create the interpreter.)
+(lldb) po error
+Failed to copy data to input tensor.
+```
+
