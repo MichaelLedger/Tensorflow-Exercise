@@ -1,6 +1,7 @@
 import tensorflow as tf
 
 interpreter = tf.lite.Interpreter(model_path="koniq.tflite")
+#interpreter = tf.lite.Interpreter(model_path="other_models/style_transfer_quantized_384.tflite")
 interpreter.allocate_tensors()
 
 # Print input shape and type

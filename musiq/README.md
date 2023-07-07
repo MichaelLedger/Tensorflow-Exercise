@@ -1,5 +1,46 @@
 # MUSIQ: Multi-scale Image Quality Transformer
 
+https://www.tensorflow.org/lite/guide/inference#run_inference_with_dynamic_shape_model
+
+https://www.tensorflow.org/lite/guide/signatures
+
+https://github.com/tensorflow/tensorflow/issues/60814
+```
+pkgoogle commented 3 weeks ago
+Hi @OleksandrGrument, in order to keep TFLite light, we have to compromise on some design choices such as dynamic input shapes. Currently we do not plan to implement this feature in the near future. Apologies we can't help you here soon.
+```
+
+https://github.com/tensorflow/tensorflow/issues/29590
+
+```
+We added support for unknown dimensions in TensorFlow Lite today (5591208).
+
+Can you try converting your model again with tonight's (1/31) tf-nightly once it's released (pip install tf-nightly). Convert the model with experimental_new_converter = True.
+
+When you load the model it should have an additional field shape_signature that contains the shape with any unknown dimensions marked with -1. shape will have those dimensions marked with 1.
+
+You can then call ResizeInputTensor with the desired shape when running the interpreter. The generated model will only work on the latest TensorFlow version (i.e. the interpreter on the tf-nightly version you are running).
+
+If it does not work, can you provide a detailed error and repro instructions?
+```
+
+```
+Hello guys, @jvishnuvardhan
+The tf-nightly can convert None axis in all of my test model, and work perfectly, thanks.
+
+interpreter = tflite.Interpreter(model_path="densenet/densenet.tflite")
+X = img.reshape([1, 32, width, 1])
+input_details = interpreter.get_input_details()
+output_details = interpreter.get_output_details()
+interpreter.resize_tensor_input(input_details[0]['index'], (1, 32, width, 1))
+interpreter.allocate_tensors()
+interpreter.set_tensor(input_details[0]['index'], X)
+interpreter.invoke()
+Y = interpreter.get_tensor(output_details[0]['index'])
+```
+
+`input_tensor: Tensor("image_bytes_tensor:0", shape=(), dtype=string)`
+
 ## MUSIQ unofficial Google product.
 
 https://github.com/google-research/google-research/tree/master/musiq
@@ -1842,3 +1883,277 @@ Failed to create the interpreter with error: Failed to create the interpreter.
 Failed to copy data to input tensor.
 ```
 
+## Input images with dynamic dimensions in Tensorflow-lite
+
+https://stackoverflow.com/questions/55701663/input-images-with-dynamic-dimensions-in-tensorflow-lite
+
+The trick is to use the function interpreter::resize_tensor_input(...) of the TF-Lite API in real time during inference. I will provide a python implementation of it. The Java and C++ implementation should be the same (as they have similar API):
+```
+from tensorflow.contrib.lite.python import interpreter
+
+# Load the *.tflite model and get input details
+model = Interpreter(model_path='model.tflite')
+input_details = model.get_input_details()
+
+# Your network currently has an input shape (1, 128, 80 , 1),
+# but suppose you need the input size to be (2, 128, 200, 1).
+model.resize_tensor_input(
+    input_details[0]['index'], (2, 128, 200, 1))
+model.allocate_tensors()
+```
+
+That's it. You can now use that model for images with shape (2, 128, 200, 1), as long as your network architecture allows such an input shape. Beware that you will have to do model.allocate_tensors() every time you do such a reshape, so it will be very inefficient. It is strongly recommended to avoid using this function too much in your program.
+
+**The above answer no longer works with newer version of Tensorflow. One should use shape None instead of a dummy shape in conversion step, and then it works by using interpreter.resizeInput(). See here: https://github.com/tensorflow/tensorflow/issues/41807**
+
+## Python End Program – How to Exit a Python Program in the Terminal
+
+https://www.freecodecamp.org/news/python-end-program-how-to-exit-a-python-program-in-terminal/
+
+The `exit()` and `quit()` functions can exit a Python program in the terminal for both Windows and macOS.
+
+Alternatively, you can use the `Ctrl + Z` command to exit a Python program in the terminal in Windows and `Ctrl + D` in macOS.
+
+## input tensor shape resized but still failed to invoke the interpreter with error: Provided data count 1718200 must match the required count 0.
+
+```
+import TensorFlowLite
+
+// Load the TensorFlow Lite model
+guard let modelPath = Bundle.main.path(forResource: "model", ofType: "tflite") else {
+    fatalError("Failed to load the model.")
+}
+let interpreter = try Interpreter(modelPath: modelPath)
+
+// Resize the input
+let inputShape = try interpreter.input(at: 0).shape
+let resizedInputShape = TensorShape(dataType: .float32, shape: [1, 224, 224, 3])
+try interpreter.resizeInput(at: 0, to: resizedInputShape)
+
+// Continue with your inference process
+// ...
+```
+
+https://www.tensorflow.org/lite/api_docs/swift/Structs/Tensor/Shape
+
+**Cannot find 'TensorShape' in scope**
+
+```
+/// Returns the type of a tensor element.
+TFL_CAPI_EXPORT extern TfLiteType TfLiteTensorType(const TfLiteTensor* tensor);
+
+/// Returns the number of dimensions that the tensor has.  Returns -1 in case
+/// the 'opaque_tensor' does not have its dimensions property set.
+TFL_CAPI_EXPORT extern int32_t TfLiteTensorNumDims(const TfLiteTensor* tensor);
+
+/// Returns the length of the tensor in the "dim_index" dimension.
+/// REQUIRES: 0 <= dim_index < TFLiteTensorNumDims(tensor)
+TFL_CAPI_EXPORT extern int32_t TfLiteTensorDim(const TfLiteTensor* tensor,
+                                               int32_t dim_index);
+
+/// Returns the size of the underlying data in bytes.
+TFL_CAPI_EXPORT extern size_t TfLiteTensorByteSize(const TfLiteTensor* tensor);
+
+/// Returns a pointer to the underlying data buffer.
+///
+/// \note The result may be null if tensors have not yet been allocated, e.g.,
+/// if the Tensor has just been created or resized and `TfLiteAllocateTensors()`
+/// has yet to be called, or if the output tensor is dynamically sized and the
+/// interpreter hasn't been invoked.
+TFL_CAPI_EXPORT extern void* TfLiteTensorData(const TfLiteTensor* tensor);
+
+/// Returns the (null-terminated) name of the tensor.
+TFL_CAPI_EXPORT extern const char* TfLiteTensorName(const TfLiteTensor* tensor);
+```
+
+(lldb) po TfLiteTensorName(cTensor)
+▿ Optional<UnsafePointer<Int8>>
+  ▿ some : 0x0000000126e30948
+    - pointerValue : 4947380552
+
+(lldb) po TfLiteTensorData(cTensor)
+nil
+
+(lldb) po TfLiteTensorType(cTensor)
+▿ TfLiteType
+  - rawValue : 5
+
+```
+extension Tensor {
+  /// The supported `Tensor` data types.
+  public enum DataType: Equatable, Hashable {
+    /// A boolean.
+    case bool
+    /// An 8-bit unsigned integer.
+    case uInt8
+    /// A 16-bit signed integer.
+    case int16
+    /// A 32-bit signed integer.
+    case int32
+    /// A 64-bit signed integer.
+    case int64
+    /// A 16-bit half precision floating point.
+    case float16
+    /// A 32-bit single precision floating point.
+    case float32
+    /// A 64-bit double precision floating point.
+    case float64
+
+    /// Creates a new instance from the given `TfLiteType` or `nil` if the data type is unsupported
+    /// or could not be determined because there was an error.
+    ///
+    /// - Parameter type: A data type for a tensor.
+    init?(type: TfLiteType) {
+      switch type {
+      case kTfLiteBool:
+        self = .bool
+      case kTfLiteUInt8:
+        self = .uInt8
+      case kTfLiteInt16:
+        self = .int16
+      case kTfLiteInt32:
+        self = .int32
+      case kTfLiteInt64:
+        self = .int64
+      case kTfLiteFloat16:
+        self = .float16
+      case kTfLiteFloat32:
+        self = .float32
+      case kTfLiteFloat64:
+        self = .float64
+      case kTfLiteNoType:
+        fallthrough
+      default:
+        return nil
+      }
+    }
+  }
+}
+```
+
+## TensorFlow Lite converter
+
+https://android.googlesource.com/platform/external/tensorflow/+/632ff3f6169ef18a6947c53bd6f3cb5bf7fc26a6/tensorflow/lite/g3doc/convert/index.md
+
+![TFLiteConverter](/images/TFLiteConverter.png)
+
+https://www.tensorflow.org/lite/api_docs/python/tf/lite/TFLiteConverter
+
+```
+# Converting a SavedModel to a TensorFlow Lite model.
+  converter = tf.lite.TFLiteConverter.from_saved_model(saved_model_dir)
+  tflite_model = converter.convert()
+
+# Converting a tf.Keras model to a TensorFlow Lite model.
+converter = tf.lite.TFLiteConverter.from_keras_model(model)
+tflite_model = converter.convert()
+
+# Converting ConcreteFunctions to a TensorFlow Lite model.
+converter = tf.lite.TFLiteConverter.from_concrete_functions([func], model)
+tflite_model = converter.convert()
+
+# Converting a Jax model to a TensorFlow Lite model.
+converter = tf.lite.TFLiteConverter.experimental_from_jax([func], [[
+    ('input1', input1), ('input2', input2)]])
+tflite_model = converter.convert()
+```
+
+```
+(base) ➜  koniq git:(main) ✗ python3 inspect_tflite.py
+INFO: Created TensorFlow Lite delegate for select TF ops.
+Metal device set to: Apple M1 Pro
+
+systemMemory: 16.00 GB
+maxCacheSize: 5.33 GB
+
+INFO: TfLiteFlexDelegate delegate: 22 nodes delegated out of 1179 nodes with 3 partitions.
+
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+1 input(s):
+[] <class 'numpy.bytes_'>
+
+1 output(s):
+[] <class 'numpy.float32'>
+```
+
+## Bug: No attribute '_to_proto_fn error while importing tensorflow_hub #883
+
+https://github.com/tensorflow/hub/issues/883
+
+```
+(base) ➜  koniq git:(main) ✗ pip3 install tf-nightly
+(base) ➜  koniq git:(main) ✗ pip3 install --upgrade tf-hub-nightly
+```
+
+## Tensorflow on M1 Macbook Pro, error when model fit executes
+
+```
+(base) ➜  musiq git:(main) ✗ python3 Inference_with_MUSIQ.py
+
+...
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/gavinxiang/Downloads/Tensorflow-Exercise/musiq/Inference_with_MUSIQ.py", line 137, in <module>
+    prediction = predict_fn(tf.constant(image_bytes))
+  File "/Users/gavinxiang/miniconda3/lib/python3.10/site-packages/tensorflow/python/eager/polymorphic_function/concrete_function.py", line 1162, in __call__
+    return self._call_impl(args, kwargs)
+  File "/Users/gavinxiang/miniconda3/lib/python3.10/site-packages/tensorflow/python/eager/polymorphic_function/concrete_function.py", line 1174, in _call_impl
+    return self._call_with_flat_signature(args, kwargs)
+  File "/Users/gavinxiang/miniconda3/lib/python3.10/site-packages/tensorflow/python/eager/polymorphic_function/concrete_function.py", line 1230, in _call_with_flat_signature
+    return self._call_flat(args, self.captured_inputs)
+  File "/Users/gavinxiang/miniconda3/lib/python3.10/site-packages/tensorflow/python/saved_model/load.py", line 146, in _call_flat
+    return super()._call_flat(args, captured_inputs)
+  File "/Users/gavinxiang/miniconda3/lib/python3.10/site-packages/tensorflow/python/eager/polymorphic_function/concrete_function.py", line 1329, in _call_flat
+    return self._build_call_outputs(self._inference_function(*args))
+  File "/Users/gavinxiang/miniconda3/lib/python3.10/site-packages/tensorflow/python/eager/polymorphic_function/atomic_function.py", line 222, in __call__
+    outputs = self._bound_context.call_function(
+  File "/Users/gavinxiang/miniconda3/lib/python3.10/site-packages/tensorflow/python/eager/context.py", line 1479, in call_function
+    outputs = execute.execute(
+  File "/Users/gavinxiang/miniconda3/lib/python3.10/site-packages/tensorflow/python/eager/execute.py", line 53, in quick_execute
+    tensors = pywrap_tfe.TFE_Py_Execute(ctx._handle, device_name, op_name,
+tensorflow.python.framework.errors_impl.NotFoundError: Graph execution error:
+
+Detected at node PartitionedCall defined at (most recent call last):
+<stack traces unavailable>
+could not find registered platform with id: 0x12d749330
+     [[{{node PartitionedCall}}]] [Op:__inference_signature_wrapper_25722]
+```
+
+https://developer.apple.com/forums/thread/721619
+
+I dropped back to the following versions: tensorflow-macos==2.9 and tensorflow-metal==0.5.0. Was using the tensorflow-macos==2.11 and tensorflow-metal==0.7.0 version and just couldn't get things to work. After dropping back I was able to use the GPU and all my validations worked. I'll check back later to see if a more current version will worl.
+
+## Email Feedbacks
+
+After some hard work and research, we are temporarily unable to bring MUSIQ to mobile devices via Tensorflow or PyTorch.
+                
+Tensorflow models trained by Google using experimental techniques such as dynamic input/output shapes and signatures.
+  
+In the other side, PyTorch do not support Mobile well as we already tried to convert to core ML packages which size are too big and running speed is too slow.
+ 
+We can try MUSIQ after google research team provides mobile demos or Tensorflow truly applies experimental technology to practical applications.
+ 
+Here are some links you can refer to:
+ 
+https://www.tensorflow.org/lite/guide/inference#run_inference_with_dynamic_shape_model
+ 
+I tried to resize the input shape before running inference, but it do not works with Tensorflow Lite in Mobile.
+ 
+  https://www.tensorflow.org/lite/guide/signatures
+ 
+                Known limitations
+  
+As TFLite interpreter does not gurantee thread safety, the signature runners from the same interpreter won't be executed concurrently.
+                Support for C/iOS/Swift is not available yet.
+ 
+https://github.com/tensorflow/tensorflow/issues/60814
+ 
+In order to keep TFLite light, we have to compromise on some design choices such as dynamic input shapes. Currently we do not plan to implement this feature in the near future. Apologies we can't help you here soon.
+ 
+https://builtin.com/data-science/pytorch-vs-tensorflow
+ 
+PYTORCH VS. TENSORFLOW:
+TensorFlow is a very powerful and mature deep learning library with strong visualization capabilities and several options for high-level model development. It has production-ready deployment options and support for mobile platforms.
+PyTorch, on the other hand, is still a young framework with stronger community movement and it's more Python-friendly.

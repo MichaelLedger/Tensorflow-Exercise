@@ -63,11 +63,15 @@ NAME_TO_HANDLE = {
     'ava': 'https://tfhub.dev/google/musiq/ava/1',
 }
 
-model_handle = NAME_TO_HANDLE[selected_model]
-model = hub.load(model_handle)
-predict_fn = model.signatures['serving_default']
+#model_handle = NAME_TO_HANDLE[selected_model]
+#model = hub.load(model_handle)
+#predict_fn = model.signatures['serving_default']
+#
+#print(f'loaded model {selected_model} ({model_handle})')
 
-print(f'loaded model {selected_model} ({model_handle})')
+saved_model_dir = selected_model + "/saved_model"
+model = tf.saved_model.load(saved_model_dir)
+predict_fn = model.signatures[tf.saved_model.DEFAULT_SERVING_SIGNATURE_DEF_KEY]
 
 # %%
 # !! {"metadata":{

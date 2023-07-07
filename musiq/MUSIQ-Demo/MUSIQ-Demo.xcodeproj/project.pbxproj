@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		673D26962A52BA7A009B32AF /* koniq.tflite in Resources */ = {isa = PBXBuildFile; fileRef = 673D26952A52BA7A009B32AF /* koniq.tflite */; };
 		6749091729EE290800FC7DE5 /* StyleTransferer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6749091629EE290800FC7DE5 /* StyleTransferer.swift */; };
 		6749091929EE62C000FC7DE5 /* MUSIQTaskVision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6749091829EE62C000FC7DE5 /* MUSIQTaskVision.swift */; };
 		6749098829EE765A00FC7DE5 /* TFLMUSIQTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 6749098229EE765A00FC7DE5 /* TFLMUSIQTransformer.m */; };
@@ -22,7 +23,6 @@
 		676B900729E9658E006D24A4 /* TFLiteExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676B900529E9658E006D24A4 /* TFLiteExtension.swift */; };
 		676B900829E9658E006D24A4 /* UIKitExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676B900629E9658E006D24A4 /* UIKitExtension.swift */; };
 		676B900A29E96615006D24A4 /* StylePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676B900929E96615006D24A4 /* StylePickerViewController.swift */; };
-		67D4178D2A2EFBD900529A46 /* spaq.tflite in Resources */ = {isa = PBXBuildFile; fileRef = 67459E0F29F140DC00855644 /* spaq.tflite */; };
 		67D417902A2F050800529A46 /* MUSIQHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67D4178E2A2F050800529A46 /* MUSIQHelper.cpp */; };
 		793B8A8547D06EA80A2100D9 /* Pods_MUSIQ_Demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8836743E999293216357C7F5 /* Pods_MUSIQ_Demo.framework */; };
 /* End PBXBuildFile section */
@@ -30,6 +30,7 @@
 /* Begin PBXFileReference section */
 		508BB321A5A518E856EAB3E3 /* Pods-MUSIQ-Demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MUSIQ-Demo.release.xcconfig"; path = "Target Support Files/Pods-MUSIQ-Demo/Pods-MUSIQ-Demo.release.xcconfig"; sourceTree = "<group>"; };
 		5EE9EB304E023EEE0F28D9DD /* Pods-MUSIQ-Demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MUSIQ-Demo.debug.xcconfig"; path = "Target Support Files/Pods-MUSIQ-Demo/Pods-MUSIQ-Demo.debug.xcconfig"; sourceTree = "<group>"; };
+		673D26952A52BA7A009B32AF /* koniq.tflite */ = {isa = PBXFileReference; lastKnownFileType = file; name = koniq.tflite; path = ../../../../koniq/koniq.tflite; sourceTree = "<group>"; };
 		67459E0F29F140DC00855644 /* spaq.tflite */ = {isa = PBXFileReference; lastKnownFileType = file; path = spaq.tflite; sourceTree = "<group>"; };
 		6749091629EE290800FC7DE5 /* StyleTransferer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleTransferer.swift; sourceTree = "<group>"; };
 		6749091829EE62C000FC7DE5 /* MUSIQTaskVision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MUSIQTaskVision.swift; sourceTree = "<group>"; };
@@ -167,6 +168,7 @@
 		676B900B29E96638006D24A4 /* model */ = {
 			isa = PBXGroup;
 			children = (
+				673D26952A52BA7A009B32AF /* koniq.tflite */,
 				67459E0F29F140DC00855644 /* spaq.tflite */,
 				6749099E29EFD11D00FC7DE5 /* nima.tflite */,
 			);
@@ -244,7 +246,7 @@
 			files = (
 				676B8FFB29E95F5B006D24A4 /* LaunchScreen.storyboard in Resources */,
 				676B8FF829E95F5B006D24A4 /* Assets.xcassets in Resources */,
-				67D4178D2A2EFBD900529A46 /* spaq.tflite in Resources */,
+				673D26962A52BA7A009B32AF /* koniq.tflite in Resources */,
 				676B8FF629E95F5A006D24A4 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

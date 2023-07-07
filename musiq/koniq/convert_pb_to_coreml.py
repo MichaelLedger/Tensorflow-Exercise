@@ -51,7 +51,7 @@ import coremltools as ct
 
 #ValueError: Unable to determine the type of the model, i.e. the source framework. Please provide the value of argument "source", from one of ["tensorflow", "pytorch", "milinternal"]. Note that model conversion requires the source package that generates the model. Please make sure you have the appropriate version of source package installed. E.g., if you're converting model originally trained with TensorFlow 1.14, make sure you have `tensorflow==1.14` installed.
 
-saved = tf.keras.models.load_model('saved_model.pb')
+saved = tf.keras.models.load_model('saved_model/saved_model.pb')
 
 model = ct.convert(
                    model=New_Model,
