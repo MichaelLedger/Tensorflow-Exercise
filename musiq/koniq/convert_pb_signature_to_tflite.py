@@ -103,46 +103,48 @@ print("First input tensor dtype:", input_tensor.dtype)
 #input_shape = (224, 224, 3)  # Example input shape
 #signature.build(tf.TensorShape([None] + list(input_shape)))
 
-#converter = tf.lite.TFLiteConverter.from_concrete_functions([signature])
-##WARNING:absl:Optimization option OPTIMIZE_FOR_SIZE is deprecated, please use optimizations=[Optimize.DEFAULT] instead.
-#converter.optimizations = [tf.lite.Optimize.DEFAULT]
-#converter.experimental_new_converter = True
-#converter._experimental_lower_tensor_list_ops = True
-#converter.allow_custom_ops = True
-#converter.target_spec.supported_ops = [
-#    tf.lite.OpsSet.TFLITE_BUILTINS, # enable TensorFlow Lite ops.
-#    tf.lite.OpsSet.SELECT_TF_OPS # enable TensorFlow ops.
-#]
-#tflite_model = converter.convert()
-#
-TFLITE_FILE_PATH="koniq.tflite"
-#
-#fo = open(
-#    TFLITE_FILE_PATH, "wb")
-#fo.write(tflite_model)
-#fo.close
+converter = tf.lite.TFLiteConverter.from_concrete_functions([signature])
+#WARNING:absl:Optimization option OPTIMIZE_FOR_SIZE is deprecated, please use optimizations=[Optimize.DEFAULT] instead.
+converter.optimizations = [tf.lite.Optimize.DEFAULT]
+converter.experimental_new_converter = True
+converter._experimental_lower_tensor_list_ops = True
+converter.allow_custom_ops = True
+converter.target_spec.supported_ops = [
+    tf.lite.OpsSet.TFLITE_BUILTINS, # enable TensorFlow Lite ops.
+    tf.lite.OpsSet.SELECT_TF_OPS # enable TensorFlow ops.
+]
+#AttributeError: 'TFLiteConverterV2' object has no attribute 'resize_tensor_input'
+#converter.resize_tensor_input(converter.get_input_details()[0]['index'], [1, 224, 224, 3])
+tflite_model = converter.convert()
 
-#exit()
-#print("code should never come to here!")
+TFLITE_FILE_PATH="koniq.tflite"
+
+fo = open(
+    TFLITE_FILE_PATH, "wb")
+fo.write(tflite_model)
+fo.close
 
 #dynamic shape
-## Load the TFLite model in TFLite Interpreter
-#interpreter = tf.lite.Interpreter(model_path=TFLITE_FILE_PATH)
-## Resize input shape for dynamic shape model and allocate tensor
-##interpreter.resize_tensor_input(interpreter.get_input_details()[0]['index'], [1, 224, 224, 3])
-#interpreter.allocate_tensors()
-## Get input and output tensors.
-## Print input shape and type
-#inputs = interpreter.get_input_details()
-#print('{} input(s):'.format(len(inputs)))
-#for i in range(0, len(inputs)):
-#    print('{} {}'.format(inputs[i]['shape'], inputs[i]['dtype']))
-#
-## Print output shape and type
-#outputs = interpreter.get_output_details()
-#print('\n{} output(s):'.format(len(outputs)))
-#for i in range(0, len(outputs)):
-#    print('{} {}'.format(outputs[i]['shape'], outputs[i]['dtype']))
+# Load the TFLite model in TFLite Interpreter
+interpreter = tf.lite.Interpreter(model_path=TFLITE_FILE_PATH)
+# Resize input shape for dynamic shape model and allocate tensor
+interpreter.resize_tensor_input(interpreter.get_input_details()[0]['index'], [1, 224, 224, 3])
+interpreter.allocate_tensors()
+# Get input and output tensors.
+# Print input shape and type
+inputs = interpreter.get_input_details()
+print('{} input(s):'.format(len(inputs)))
+for i in range(0, len(inputs)):
+    print('{} {}'.format(inputs[i]['shape'], inputs[i]['dtype']))
+
+# Print output shape and type
+outputs = interpreter.get_output_details()
+print('\n{} output(s):'.format(len(outputs)))
+for i in range(0, len(outputs)):
+    print('{} {}'.format(outputs[i]['shape'], outputs[i]['dtype']))
+    
+#exit()
+#print("code should never come to here!")
 
 # Create a TFLite converter
 #converter = tf.lite.TFLiteConverter.from_concrete_functions([interpreter])

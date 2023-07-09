@@ -218,12 +218,13 @@ class MUSIQTransferer {
 //                let resizedInputShape = Tensor.Shape([shapeBatchSize, shapeHeight, shapeWidth, shapeChannels])
 //                try self.predictInterpreter.resizeInput(at: 0, to: resizedInputShape)
                 
-                let resizedInputShape = Tensor.Shape([1])
+                let resizedInputShape = Tensor.Shape([1,224,224,3])
                 try self.predictInterpreter.resizeInput(at: 0, to: resizedInputShape)
                 try self.predictInterpreter.allocateTensors()
-                let resizedInputTensor = try self.predictInterpreter.input(at: 0)
-                print("[inputTensor-resize-after]:\(resizedInputTensor)")
-                try self.predictInterpreter.copy(imageBytesBase64EncodedStringData, toInputAt: 0)
+//                let resizedInputTensor = try self.predictInterpreter.input(at: 0)
+//                print("[inputTensor-resize-after]:\(resizedInputTensor)")
+//                try self.predictInterpreter.copy(imageBytesBase64EncodedStringData, toInputAt: 0)
+                try self.predictInterpreter.copy(inputRGBData, toInputAt: 0)
 
                 /*== resize Input shape end ==*/
                 
